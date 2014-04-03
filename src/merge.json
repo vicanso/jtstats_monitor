@@ -1,0 +1,28 @@
+{
+  "except" : [
+    "/components/jquery.js"
+  ],
+  "files" : [
+    [
+      "/components/underscore.js",
+      "/components/backbone.js",
+      "/components/sea.js",
+      "/components/config.js",
+      "/components/jtjquery.js",
+      "/components/jtunderscore.js",
+      "/components/jtbackbone.js"
+    ],
+    [
+      "/components/jtlazy_load.js",
+      "/components/jtphoto_wall.js"
+    ],
+    [
+      "/components/normalize.css",
+      "/stylesheets/global.css",
+      "/stylesheets/ui.css",
+      "/stylesheets/icon.css",
+      "/stylesheets/header.css",
+      "/stylesheets/footer.css"
+    ]
+  ]
+}

@@ -1,0 +1,53 @@
+@import 'nib'
+@import './common'
+
+body
+  // visibility hidden
+  font-size 13px
+  line-height 1.5em
+  color #333
+  background-image url(../images/bodybg.jpg)
+a
+  color #0054a6
+  text-decoration none
+  &:hover
+    color #ba2636
+.clearfix
+  clearfix()
+
+.contentWidth
+  max-width $CONTENT_WIDTH
+  margin auto
+
+.table
+  table-layout fixed
+  border-collapse collapse
+  width 100%
+  thead
+    border-top 1px solid #d0d0d0
+    border-bottom 1px solid #d0d0d0
+    background-color #f9f9f9
+  th, td
+    padding 8px 0
+    text-align center
+  tbody
+    tr
+      &.even
+        background-color #f9f9f9
+
+
+.error
+  padding 8px 35px 8px 14px
+  color #b94a48
+  background-color #f2dede
+  border-color #eed3d7
+  text-shadow 0 1px 0 rgba(255, 255, 255, 0.5)
+  border-radius 4px
+
+.success
+  padding 8px 35px 8px 14px
+  color #468847
+  background-color #dff0d8
+  border-color #d6e9c6
+  text-shadow 0 1px 0 rgba(255, 255, 255, 0.5)
+  border-radius 4px

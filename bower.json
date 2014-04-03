@@ -1,0 +1,12 @@
+{
+  "name" : "novel",
+  "dependencies" : {
+    "html5shiv" : "3.7.0",
+    "jtlazy_load" : "0.0.6",
+    "jtphoto_wall" : "0.0.2",
+    "jquery" : "1.10.2",
+    "normalize-css" : "2.1.3",
+    "backbone" : "1.1.0",
+    "underscore" : "1.5.2"
+  }
+}

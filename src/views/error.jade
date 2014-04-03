@@ -1,0 +1,11 @@
+extend ./layout
+block bodyContainer
+  //- include ./header
+  .contentWidth
+    - var error = viewData.error;
+    p.error 很抱歉，该页面出错了！
+      if error.msg
+        span #{error.msg}
+    .errStack.hidden #{error.stack}
+
+  - fileImporter.importCss('/stylesheets/error.css');
