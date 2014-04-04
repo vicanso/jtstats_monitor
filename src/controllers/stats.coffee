@@ -35,18 +35,21 @@ module.exports = (req, res, cbf) ->
       _.each docs, (doc) ->
         doc = doc.toObject()
         result = result.concat formatData doc
-      cbf null, result
+      cbf null, {
+        name : key
+        data : result
+      }
   ], cbf
 
 
 formatData = (doc) ->
   date = moment doc.date, 'YYYY-MM-DD'
-  timestamp = date.valueOf()
+  timestamp = Math.floor date.valueOf() / 1000
   values = doc.values
   arr = []
   _.each values, (value) ->
-    index = Math.floor (value.t - timestamp) / (10 * 1000)
-    arr[index] = [value.t, value.v]
+    index = Math.floor (value.t - timestamp) / 10
+    arr[index] = [value.t * 1000, value.v]
   _.compact arr
 
 

@@ -1,23 +1,21 @@
-modules = ['jquery', 'chart']
-seajs.use modules, ($, chart) ->
+modules = ['jquery', 'chart', 'utils']
+seajs.use modules, ($, chart, utils) ->
 
-
-  $.ajax({
-    url : '/stats/haproxy.http/2014-04-02/2014-04-03'
-    dataType : 'json'
-  }).success (res) ->
-    chart.show $('#contentContainer .chartContainer'), [
-      {
-        name : 'haproxy.http.resTime'
-        data : res
-        tooltip : 
-          valueDecimals : 2
-      }
-    ]
-    # $('#contentContainer .chartContainer'),.chartContainer {
-    #   title : 
-    # }
-    console.dir res
+  urls = [
+    '/stats/haproxy.statusCode.404/2014-04-03/2014-04-04'
+    # '/stats/haproxy.http.tc/2014-04-03'
+  ]
+  utils.get urls, (err, res) ->
+    chart.show $('#contentContainer .chartContainer'), res if res
+  # $.ajax({
+  #   url : '/stats/haproxy.http.resTime/2014-04-03/2014-04-04'
+  #   dataType : 'json'
+  # }).success (res) ->
+  #   chart.show $('#contentContainer .chartContainer'), [ res ]
+  #   # $('#contentContainer .chartContainer'),.chartContainer {
+  #   #   title : 
+  #   # }
+  #   console.dir res
   setTimeout ->
     seajs.emit 'loadComplete' if CONFIG.env == 'development'
   , 1

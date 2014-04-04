@@ -3,6 +3,7 @@ seajs.config {
   alias : 
     'jquery' : 'components/jtjquery.js'
     'chart' : 'modules/chart.js'
+    'utils' : 'modules/utils.js'
 }
 
 # seajs.config({

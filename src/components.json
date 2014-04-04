@@ -7,6 +7,7 @@
       "/components/config.js",
       "/components/jtjquery.js",
       "/modules/chart.js",
+      "/modules/utils.js",
       "/javascripts/index.js"
     ],
     "cssList": [
@@ -15,6 +16,6 @@
       "/stylesheets/index.css",
       "/stylesheets/footer.css"
     ],
-    "modifiedAt": "2014-04-03 21:20:13"
+    "modifiedAt": "2014-04-04 16:34:49"
   }
 }

@@ -1,16 +1,23 @@
-define 'chart', ['jquery'], (require, exports) ->
+define 'chart', (require, exports) ->
 
   Highcharts.setOptions {
     global : 
       useUTC : false
+    tooltip : 
+      valueDecimals : 2
+    rangeSelector : 
+      selected : 5
+      inputEnabled : false
+    title :
+      text : 'JT STATS'
   }
   exports.show = (jqObj, data) ->
     jqObj.highcharts 'StockChart', {
-      rangeSelector : 
-        selected : 1
-        inputEnabled : false
-      title :
-        text : 'JT STATS'
+      legend :
+        layout : 'vertical'
+        align : 'right'
+        verticalAlign : 'middle'
+        borderWidth : 0
       series : data
     }
 
