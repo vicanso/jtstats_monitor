@@ -1,117 +1,119 @@
-program = require 'commander'
-do ->
-  program.version('0.0.1')
-  .option('-p, --port <n>', 'listen port', parseInt)
-  .option('--log <n>', 'the log file')
-  .parse process.argv
-
-_ = require 'underscore'
-jtRouter = require 'jtrouter'
 path = require 'path'
-fs = require 'fs'
 config = require './config'
-# setting = require './setting'
 logger = require('./helpers/logger') __filename
-
-
-
-
-
 
 initAppSetting = (app) ->
   app.set 'view engine', 'jade'
   app.set 'trust proxy', true
   app.set 'views', "#{__dirname}/views"
-  app.locals.title = '测试代码'
-  app.locals.ENV = config.getENV()
-  # app.locals.isProductionMode = isProductionMode
-  app.locals.LOCAL =
-    staticUrlPrefix : getStaticUrlPrefix
-  app
 
-getStaticUrlPrefix = ->
-  if config.getENV() == 'production'
-    "http://svxs.vicanso.com"
-  else
-    ''
+  app.locals.CONFIG =
+    env : config.env
+    staticUrlPrefix : config.staticUrlPrefix
+  return
 
+initMongod = ->
+  uri = config.mongodbUri
+  if uri
+    mongodb = require './helpers/mongodb'
+    mongodb.init uri
+    # mongodb.initModels path.join __dirname, './models'
 
+requestStatistics = ->
+  requestTotal = 0
+  tooManyReq = new Error 'too many request'
+  (req, res, next) ->
+    requestTotal++
+    startAt = process.hrtime()
+    stat =  ->
+      diff = process.hrtime startAt
+      ms = diff[0] * 1e3 + diff[1] * 1e-6
+      requestTotal--
+      data = 
+        responeseTime : ms.toFixed(3)
+        statusCode : res.statusCode
+        url : req.url
+        requestTotal : requestTotal
+        contentLength : GLOBAL.parseInt res._headers['content-length']
+      logger.info data
+    res.on 'finish', stat
+    res.on 'close', stat
+    next()
 
-initMongodb = ->
-  dbConfig = config.getMongodbConfig()
-  require('./helpers/mongodb').init dbConfig if dbConfig
 
 initServer = ->
+  initMongod()
   express = require 'express'
   app = express()
-
   initAppSetting app
-
-  # 心跳检查
   app.use '/healthchecks', (req, res) ->
     res.send 'success'
 
+  if config.env == 'production'
+    app.use requestStatistics() 
+    app.use require('morgan')()
 
-  staticPath = path.join "#{__dirname}/statics"
-  staticMount = '/static'
-  if app.get('env') == 'development'
-    app.use express.logger 'dev'
-    jtDev = require 'jtdev'
-    # 后缀转化，如请求a.js，先判断a.js是否存在，不存在则将请求url修改为a.coffee，js --> coffee、css --> styl
-    app.use staticMount, jtDev.ext.converter staticPath
-    # stylus编译为相应的css
-    app.use staticMount, jtDev.stylus.parser staticPath
-    # coffee编译为相应的js
-    app.use staticMount, jtDev.coffee.parser staticPath
-  else
-    app.use express.logger {
-      format : 'tiny'
-      stream : 
-        write : (str) ->
-          logger.info str.trim()
-    }
+  timeout = require 'connect-timeout'
+  app.use timeout 5000
 
+  expressStatic = 'static'
+  serveStatic = express[expressStatic]
+  ###*
+   * [staticHandler 静态文件处理]
+   * @param  {[type]} mount      [description]
+   * @param  {[type]} staticPath [description]
+   * @return {[type]}            [description]
+  ###
+  staticHandler = (mount, staticPath) ->
+    staticHandler = serveStatic staticPath
+    
+    hour = 3600
+    hour = 0 if !process.env.NODE_ENV
 
-  # 静态文件处理
-  hour = 3600
-  staticMaxAge = 30 * 24 * hour
-  staticHanlder = express.static staticPath
-  app.use staticMount, (req, res, next) ->
-    res.header 'Cache-Control', "public, max-age=#{staticMaxAge}, s-maxage=#{hour}"
-    staticHanlder req, res, next
+    staticMaxAge = 30 * 24 * hour
 
+    if config.env == 'development'
+      jtDev = require 'jtdev'
+      app.use mount, jtDev.ext.converter staticPath
+      app.use mount, jtDev.stylus.parser staticPath
+      app.use mount, jtDev.coffee.parser staticPath
 
-  app.use express.methodOverride()
-  app.use express.bodyParser()
+    app.use mount, (req, res, next) ->
+      res.header 'Cache-Control', "public, max-age=#{staticMaxAge}, s-maxage=#{hour}"
+      staticHandler req, res, (err) ->
+        return next err if err
+        res.send 404, ''
 
+  staticHandler '/static', path.join "#{__dirname}/statics"
 
+  app.use require('morgan') 'dev' if config.env == 'development'
 
-  routes = require './routes'
-  jtRouter.initRoutes app, routes if routes
+  app.use require('method-override')()
+  bodyParser = require 'body-parser'
+  app.use bodyParser.urlencoded {
+    extended : false
+  }
+  app.use bodyParser.json()
 
-  app.use app.router
+  app.use (req, res, next) ->
+    res.locals.DEBUG = true if req.param('__debug')?
+    next()
 
+  require('./router').init app
 
-  app.use require './controllers/error'
+  app.listen config.port
 
+  console.log "server listen on: #{config.port}"
 
-  port = program.port || 10000
-  app.listen port
-
-  logger.info "server start on port:#{port}"
-
-initMongodb()
-
-if config.getENV() == 'development'
+if config.env == 'development'
   initServer()
 else
   JTCluster = require 'jtcluster'
-  jtCluster = new JTCluster()
   options = 
-    restartOnError : true
+    slaveTotal : 2
     slaveHandler : initServer
-  jtCluster.start options
-  jtClusterLogger = require('./helpers/logger') 'jtcluster'
-  jtCluster.on 'log', (data) ->
-    jtClusterLogger.info data
+  jtCluster = new JTCluster options
+  jtCluster.on 'log', (msg) ->
+    console.dir msg
+
 

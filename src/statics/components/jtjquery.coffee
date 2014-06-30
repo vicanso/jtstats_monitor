@@ -1,3 +1,0 @@
-define 'jquery', ->
-  window.jQuery
-  

@@ -1,8 +1,37 @@
-module.exports.getENV = ->
-  process.env.NODE_ENV || 'development'
+program = require 'commander'
+do ->
+  program.version('0.0.1')
+  .option('-p, --port <n>', 'listen port', parseInt)
+  .option('--log <n>', 'the log file')
+  .option('--mongodb <n>', 'mongodb uri')
+  .option('--redis <n>', 'redis uri')
+  .parse process.argv
 
-module.exports.getMongodbConfig = ->
+
+exports.port = program.port || 10000
+
+exports.env = process.env.NODE_ENV || 'development'
+
+###*
+ * [staticUrlPrefix 静态文件url前缀]
+ * @type {String}
+###
+exports.staticUrlPrefix = '/static'
+
+
+exports.redis = do ->
+  url = require 'url'
+  redisUri = program.redis || 'redis://localhost:10010'
+  urlInfo = url.parse redisUri
   {
-    dbName : 'stats'
-    uri : 'mongodb://vicanso:123456@localhost:10020/stats'
+    port : urlInfo.port
+    host : urlInfo.hostname
+    password : urlInfo.auth
   }
+
+exports.session = 
+  secret : 'jenny&tree'
+  key : 'vicanso'
+  ttl : 3600
+
+module.exports.mongodbUri = program.mongodb || 'mongodb://localhost:10020/test'

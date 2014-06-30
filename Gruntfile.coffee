@@ -1,50 +1,28 @@
 path = require 'path'
 fs = require 'fs'
-async = require 'async'
-crc32 = require 'buffer-crc32'
-vm = require 'vm'
 _ = require 'underscore'
-random = Date.now()
+crc32 = require 'buffer-crc32'
 destPath = 'dest'
 srcPath = 'src'
 staticsSrcPath = path.join srcPath, 'statics'
 staticsDestPath = path.join destPath, 'statics'
 buildPath = 'build'
-nodeModulesPath = 'node_modules'
 
+normalizePath = 'dest/statics/components/normalize.css'
 
-# 获取合并文件信息
-getConcatFiles = ->
-  JTMerge = require 'jtmerge'
-  components = require path.join __dirname, 'src/components.json'
-  mergeInfo = require path.join __dirname, 'src/merge.json'
-  jtMerge = new JTMerge mergeInfo
-  jtMerge.getMergeList components, staticsDestPath
-
-getGitCloneConfig = (repos) ->
-  config = {}
-  _.each repos, (repo) ->
-    config[repo] = 
-      options :
-        repository : "https://github.com/vicanso/#{repo}.git"
-        directory : path.join nodeModulesPath, repo
-  config
 
 
 module.exports = (grunt) ->
   noneCopyFileExts = ['.coffee', '.js', '.styl']
-  gruntConfig =
-    pkg : grunt.file.readJSON 'package.json'
+  grunt.initConfig {
     clean : 
-      grunt : ['node_modules/grunt-contrib-stylus/node_modules/stylus']
+      grunt : [
+        'node_modules/grunt-contrib-stylus/node_modules/stylus'
+        'src/statics/components/jtlazy_load/src'
+        'src/statics/components/jquery/src'
+      ]
       dest : [destPath]
       build : [buildPath]
-    gitclone : getGitCloneConfig ['jtfileimporter', 'jtmongoose', 'jtmerge', 'jtredis', 'jtrouter', 'jtdev', 'jtcluster']
-    concat : 
-      # 根据页面所需要的静态文件合并数据
-      merge : 
-        files : []
-        # getConcatFiles()
     coffee : 
       # node.js的coffee直接编译到目标目录
       node : 
@@ -62,7 +40,7 @@ module.exports = (grunt) ->
         ext : '.js'
     jshint :
       options : 
-        force : true
+        eqnull : true
       node :
         expand : true
         cwd : destPath
@@ -98,46 +76,6 @@ module.exports = (grunt) ->
             ext : '.css'
           }
         ]
-    imagemin : 
-      dynamic : 
-        files : [
-          {
-            expand : true
-            cwd : srcPath
-            src : ['**/*.{png,jpg,gif}']
-            dest : destPath
-          }
-        ]
-    imageEmbed : 
-      build : 
-        files : [
-          {
-            expand : true
-            cwd : destPath
-            src : ['**/*.css']
-            dest : destPath
-          }
-        ]
-    cssmin : 
-      build : 
-        files : [
-          {
-            expand : true
-            cwd : destPath
-            src : ['**/*.css']
-            dest : destPath
-          }
-        ]
-    csslint : 
-      strict : 
-        files : [
-          {
-            expand : true
-            cwd : destPath
-            src : ['**/*.css']
-            dest : destPath
-          }
-        ]
     copy :
       # 将其它不需要处理的文件复制（除coffee js styl）
       build : 
@@ -171,42 +109,29 @@ module.exports = (grunt) ->
             dest : staticsDestPath + '/src'
           }
         ]
-      # 初始化时，将bower的文件复制到components
-      bower : 
+    cssmin : 
+      build : 
         files : [
           {
-            src : ['bower_components/html5shiv/dist/html5shiv.js']
-            dest : 'src/statics/components/html5shiv.js'
+            expand : true
+            cwd : destPath
+            src : ['**/*.css']
+            dest : destPath
+            filter : (file) ->
+              file != normalizePath
           }
+        ]
+    imageEmbed : 
+      build : 
+        files : [
           {
-            src : ['bower_components/jquery/jquery.js']
-            dest : 'src/statics/components/jquery.js'
+            expand : true
+            cwd : destPath
+            src : ['**/*.css']
+            dest : destPath
+            filter : (file) ->
+              file != normalizePath
           }
-          {
-            src : ['bower_components/underscore/underscore.js']
-            dest : 'src/statics/components/underscore.js'
-          }
-          {
-            src : ['bower_components/backbone/backbone.js']
-            dest : 'src/statics/components/backbone.js'
-          }
-          {
-            src : ['bower_components/seajs/sea-debug.js']
-            dest : 'src/statics/components/sea.js'
-          }
-          {
-            src : ['bower_components/normalize-css/normalize.css']
-            dest : 'src/statics/components/normalize.css'
-          }
-          {
-            src : ['bower_components/jtlazy_load/jtlazy_load.js']
-            dest : 'src/statics/components/jtlazy_load.js'
-          }
-          {
-            src : ['bower_components/jtphoto_wall/jtphoto_wall.js']
-            dest : 'src/statics/components/jtphoto_wall.js'
-          }
-          
         ]
     # 计算静态文件的crc32
     crc32 : 
@@ -218,10 +143,37 @@ module.exports = (grunt) ->
             src : ['**/*.css', '**/*.js']
           }
         ]
+  }
 
-  if grunt.cli.tasks[0] != 'init'
-    gruntConfig.concat.merge.files = getConcatFiles()
-  grunt.initConfig gruntConfig
+  grunt.registerTask 'seaConfig', ->
+    crc32Buf = fs.readFileSync path.join destPath, 'crc32.json'
+    crc32Infos = JSON.parse crc32Buf
+    configFile = path.join staticsDestPath, 'javascripts/sea_config.js'
+    str = fs.readFileSync configFile, 'utf8'
+    _.each crc32Infos, (crc32, name) ->
+      name = name.substring 1
+      str = str.replace name, "#{name}?v=#{crc32}" 
+    fs.writeFileSync configFile, str
+
+    # 合并静态文件文件
+  grunt.registerTask 'merge_static', ->
+    Merger = require 'jtmerger'
+    grunt.file.mkdir path.join staticsDestPath, 'merge'
+    components = require path.join __dirname, 'src/components.json'
+    mergeInfo = require path.join __dirname, 'src/merge.json'
+    merger = new Merger mergeInfo
+    result = merger.getMergeList components, staticsDestPath
+    _.each result, (files, saveFile) ->
+      merger.merge __dirname, saveFile, files
+
+  grunt.registerMultiTask 'crc32', ->
+    crc32Infos = {}
+    @files.forEach (file) ->
+      if file.src[0] != normalizePath
+        buf = fs.readFileSync file.src[0]
+        destFile = '/' + file.dest
+        crc32Infos[destFile] = crc32.unsigned buf
+    fs.writeFileSync path.join(destPath, 'crc32.json'), JSON.stringify( crc32Infos, null, 2)
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-clean'
@@ -230,38 +182,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-stylus'
   grunt.loadNpmTasks 'grunt-image-embed'
   grunt.loadNpmTasks 'grunt-contrib-cssmin'
-  grunt.loadNpmTasks 'grunt-contrib-imagemin'
-  grunt.loadNpmTasks 'grunt-contrib-csslint'
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-concat'
-  grunt.loadNpmTasks 'grunt-git'
 
-  grunt.registerMultiTask 'crc32', ->
-    crc32Infos = {}
-    @files.forEach (file) ->
-      buf = fs.readFileSync file.src[0]
-      destFile = '/' + file.dest
-      crc32Infos[destFile] = crc32.unsigned buf
-    fs.writeFileSync path.join(destPath, 'crc32.json'), JSON.stringify( crc32Infos, null, 2)
-
-
-  grunt.registerTask 'seaConfig', ->
-    crc32Buf = fs.readFileSync path.join destPath, 'crc32.json'
-    crc32Infos = JSON.parse crc32Buf
-    configFile = path.join staticsDestPath, 'components/config.js'
-    str = fs.readFileSync configFile, 'utf8'
-    _.each crc32Infos, (crc32, name) ->
-      name = name.substring 1
-      str = str.replace name, "#{name}?v=#{crc32}" 
-    fs.writeFileSync configFile, str
-
-
-  grunt.registerTask 'test', ['jshint']
-
-  grunt.registerTask 'git', ['gitclone']
-
-  grunt.registerTask 'init', ['clean:grunt', 'copy:bower', 'gitclone']
-
-  grunt.registerTask 'gen', ['clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'imageEmbed', 'cssmin', 'concat:merge', 'crc32', 'copy:js', 'seaConfig', 'clean:build']
-
+  grunt.registerTask 'gen', ['clean:grunt', 'clean:dest', 'coffee', 'jshint', 'uglify', 'copy:build', 'stylus', 'cssmin', 'crc32', 'seaConfig', 'merge_static', 'imageEmbed', 'crc32', 'copy:js', 'clean:build']
   grunt.registerTask 'default', ['gen']

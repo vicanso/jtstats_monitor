@@ -1,0 +1,7 @@
+extends ./layout
+block bodyContainer
+  .pvContainer.chartContainer
+  .resTimeStatusContainer.chartContainer
+  .reqTotalContainer.chartContainer
+  - fileImporter.importJs('/javascripts/home.js');
+  - fileImporter.importCss('/stylesheets/home.css');

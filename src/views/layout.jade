@@ -9,27 +9,22 @@ html(lang='zh-CN')
     meta(name='keywords', content='')
     meta(name='description', content='')
     meta(name='author',content='小墨鱼 vicanso 腻味 tree')
-    title= title
-    include inlinejs
+    title #{title}
+    include ./inlinejs
     //CSS_FILES_CONTAINER
-    <!--[if lt IE 9]><script src="#{staticUrlPrefix}/static/components/html5shiv.js" type="text/javascript"></script><![endif]-->
-    script.
-      var CONFIG = {
-        "env" : "#{ENV}",
-        "template" : "#{template}"
-      };
-    - fileImporter.importCss(['/components/normalize.css', '/stylesheets/global.css']);
-    - fileImporter.importJs(['/components/jquery.js', '/components/highstock.js', '/components/sea.js', '/components/config.js']);
-    if ENV === 'development'
-      - fileImporter.importJs('/components/sea_dev.js');
-    //- - fileImporter.importJs('/components/jtrequire.js');
-    //- - fileImporter.importJs('/javascripts/sea/config.js');
+    - fileImporter.import('/components/normalize.css/normalize.css');
+    - fileImporter.import(['/components/jquery/dist/jquery.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/highstock/highstock.js', '/components/highstock/exporting.js', '/components/moment/moment.js', '/components/async/lib/async.js']);
+    - fileImporter.import(['/javascripts/global.js']);
+    - fileImporter.import(['/components/seajs/sea.js', '/javascripts/sea_config.js'])
+    if CONFIG.env == 'development'
+      - fileImporter.import('/javascripts/sea_dev.js');
   body
     block bodyContainer
-    //- include ./login
-    include ./footer
+  include ./global_variable
   script.
     window.TIME_LINE.timeEnd('html');
     window.TIME_LINE.time('js');
-  //- - fileImporter.importJs('/javascripts/statistics.js');
   //JS_FILES_CONTAINER
+  if CONFIG.env == 'development'
+    script.
+      window.IMPORT_FILES = !{JSON.stringify(fileImporter.getFiles('css').concat(fileImporter.getFiles('js')))};

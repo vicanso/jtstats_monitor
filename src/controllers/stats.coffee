@@ -1,63 +1,161 @@
-_ = require 'underscore'
+mongodb = require '../helpers/mongodb'
+config = require '../config'
 async = require 'async'
 moment = require 'moment'
-mongodb = require '../helpers/mongodb'
+_ = require 'underscore'
+logger = require('../helpers/logger') __filename
 
 module.exports = (req, res, cbf) ->
-  key = req.param 'key'
-  start = req.param 'start'
-  end = req.param 'end'
-  if start
-    start = moment start, 'YYYY-MM-DDTHH:mm:ss'
-  if end
-    end = moment end, 'YYYY-MM-DDTHH:mm:ss'
+  maxAge = 60
+  maxAge = 0 if config.env == 'development'
+  headerOptions = 
+    'Cache-Control' : "public, max-age=#{maxAge}"
 
-  infos = key.split '.'
-  collection = infos[0]
-  category = infos[1]
-  tag = infos[2]
-  query = {}
-  if infos[1]
-    query.category = infos[1]
-  if infos[2]
-    query.tag = infos[2]
-  if end
-    query.date = 
-      '$gte' : start.format 'YYYY-MM-DD'
-      '$lte' : end.format 'YYYY-MM-DD'
-  else if start
-    query.date = start.format 'YYYY-MM-DD'
+  query = req.query
+  keys = query.key
+  keys = [keys] if !_.isArray keys
+  funcs = _.map keys, (key) ->
+    (cbf) ->
+      getStatsData query, key, cbf
+  start = Date.now()
+  async.parallel funcs, (err, data) ->
+    if err
+      cbf err
+    else
+      data = _.flatten data, true
+      logger.info {
+        query : query
+        use : Date.now() - start
+      }
+      cbf null, data, headerOptions
+
+getStatsData = (query, key, cbf) ->
+  collection = query.category
+  date = query.date
+  fill = query.fill == 'true'
+  point = query.point
+  interval = GLOBAL.parseInt point?.interval
+  interval = 60 if _.isNaN interval
+  interval = 10 if interval < 10
+  conditions = {}
+  now = moment()
+
+  getDate = (date) ->
+    formatDate = ''
+    if date
+      if date[0] != '-'
+        formatDate = date
+      else
+        date = GLOBAL.parseInt date
+        formatDate = now.clone().add(date, 'day').format 'YYYY-MM-DD'
+    else
+      formatDate = now.format 'YYYY-MM-DD'
+    formatDate
+  if date
+    conditions.date = 
+      '$gte' : getDate date.start
+      '$lte' : getDate date.end
+  else
+    conditions.date = now.format 'YYYY-MM-DD'
+  if key
+    value = key.value
+    value = new RegExp value, 'gi' if key.type == 'reg'
+    conditions.key = value
   async.waterfall [
     (cbf) ->
-      mongodb.find 'haproxy', query, cbf
+      mongodb.model(collection).find conditions, cbf
     (docs, cbf) ->
-      result = []
-      _.each docs, (doc) ->
-        doc = doc.toObject()
-        result = result.concat formatData doc
-      cbf null, {
-        name : key
-        data : result
-      }
+      docs = mergeDocs docs
+      cbf null, arrangePoints docs, interval, fill
   ], cbf
 
+###*
+ * [sum description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+###
+sum = (data) ->
+  _.reduce data, (memo, num) ->
+    memo + num
+  , 0
+###*
+ * [average description]
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+###
+average = (data) ->
+  total = sum data
+  Math.round total / data.length
 
-formatData = (doc) ->
-  date = moment doc.date, 'YYYY-MM-DD'
-  timestamp = Math.floor date.valueOf() / 1000
-  values = doc.values
-  arr = []
-  _.each values, (value) ->
-    index = Math.floor (value.t - timestamp) / 10
-    arr[index] = [value.t * 1000, value.v]
-  _.compact arr
+###*
+ * [mergeDocs 将相同key的数据合并]
+ * @param  {[type]} docs [description]
+ * @return {[type]}      [description]
+###
+mergeDocs = (docs) ->
+  result = {}
+  _.each docs, (doc) ->
+    doc = doc.toObject()
+    key = doc.key
+    result[key] = [] if !result[key]
+    result[key].push doc
+  _.map result, (values, key) ->
+    firstItem = _.first values
+    lastItem = _.last values
+    obj = _.omit firstItem, ['values']
+    obj.start = firstItem.date
+    obj.end = lastItem.date
+    obj.values = _.flatten _.pluck values, 'values'
+    obj
 
 
-# mergeArr = (arr, mergeSize) ->
+arrangePoints = (docs, interval, fill) ->
+  getArr = (start, interval, length) ->
+    arr = new Array length
+    for i in [0...arr.length]
+      arr[i] = {
+        v : []
+        t : start
+      }
+      start += interval
+    arr
+  docs = _.map docs, (doc) ->
+    values = doc.values
+    type = doc.type
+    # 根据日期计算开始到结束的时间
+    start = Math.floor(moment(doc.start).valueOf() / 1000)
+    oneDaySeconds = 24 * 3600
+    end = Math.floor(moment(doc.end).valueOf() / 1000) + oneDaySeconds
+    # 如果结束时间比当前时间还要晚，直接取当前时间
+    now = Math.floor Date.now() / 1000
+    end = now if end > now
+
+    result = getArr start, interval, Math.ceil (end - start) / interval
+    _.each doc.values, (data) ->
+      index = Math.floor (data.t - start) / interval
+      if result[index]
+        result[index].v.push data.v
+    result = _.map result, (data) ->
+      # 如果v数组里有数据，则代表该时间段有记录
+      if data.v.length
+        switch type
+          when 'counter' then value = sum data.v
+          when 'average' then value = average data.v
+          when 'gauge' then value = _.last data.v
+        {
+          t : data.t
+          v : value
+        }
+      else
+        # 如果参数有配置要将无记录的间隔补全，则添加记录
+        if fill
+          {
+            t : data.t
+            v : 0
+          }
+        else
+          null
+    result = _.compact result if !fill
+    doc.values = result
+    doc
   
-
-getFillArr = (size, value) ->
-  arr = []
-  while size--
-    arr.push 0
-  arr
