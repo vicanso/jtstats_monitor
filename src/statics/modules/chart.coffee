@@ -1,58 +1,37 @@
-define 'chart', ['jquery', 'underscore'], (require, exports, module) ->
+define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require, exports, module) ->
   _ = require 'underscore'
   $ = require 'jquery'
+  echarts = require 'echarts'
+  moment = require 'moment'
 
-  defaultStockOptions =
-    title :
-      text : 'stats'
-    chart :
-      animation : false
-    yAxis :
-      min : 0
-    legend :
-      enabled : true
-    rangeSelector :
-      selected : 1
-      inputEnabled : false
-      buttonTheme : 
-        stroke : 'none'
-        r : 10
-        style :
-          color : '#039'
-        states :
-          select : 
-            fill : '#bf0b23'
-      buttons : [
-        {
-          type : 'minute'
-          count : 30
-          text : '30m'
-        }
-        {
-          type : 'minute'
-          count : 120
-          text : '2h'
-        }
-        {
-          type : 'minute'
-          count : 360
-          text : '6h'
-        }
-        {
-          type : 'minute'
-          count : 720
-          text : '12h'
-        }
-        {
-          type : 'day'
-          count : 1
-          text : '1d'
-        }
-        {
-          type : 'all'
-          text : 'all'
-        }
-      ]
+  daySeconds = 24 * 3600
+
+
+  defaultOption = 
+    tooltip :
+      trigger : 'axis'
+    calculable : true
+    toolbox :
+      show : true
+      feature :
+        mark :
+          show : true
+        dataView : 
+          show : true
+        magicType : 
+          show :true
+          type : ['line', 'bar']
+        restore : 
+          show : true
+        saveAsImage : 
+          show : true
+    yAxis : [
+      {
+        type : 'value'
+      }
+    ]
+
+
 
   ###*
    * [sum description]
@@ -72,56 +51,173 @@ define 'chart', ['jquery', 'underscore'], (require, exports, module) ->
     total = sum data
     Math.round total / data.length
 
-  covertData = (res, type = 'spline') ->
-    _.map res, (data) ->
-      arr = _.map data.values, (point) ->
-        [point.t * 1000, point.v]
+  # covertData = (res, type = 'spline') ->
+  #   _.map res, (data) ->
+  #     arr = _.map data.values, (point) ->
+  #       [point.t * 1000, point.v]
+  #     {
+  #       name : data.key
+  #       data : arr
+  #       type : type
+  #     }
+
+  mergeTimeList = (data) -> 
+    tmpArrList = _.map data, (item) ->
+      _.pluck item.values, 't'
+    result = tmpArrList.shift()
+    _.each tmpArrList, (arr) ->
+      _.each arr, (time, i) ->
+        index = _.sortedIndex result, time
+        if result[index] != time
+          result.splice index, 0, time
+    result
+
+  convertData = (data, timeList) ->
+    valuesList = _.pluck data, 'values'
+    result = []
+    for i in [0...valuesList.length]
+      result.push []
+    _.each timeList, (time) ->
+      _.each valuesList, (values, i) ->
+        if values[0]?.t == time
+          value = values.shift()
+          result[i].push value.v
+        else
+          result[i].push 0
+    result
+  formatTime = (timeList, interval) ->
+    formatStr = 'YYYY-MM-DD HH:mm:ss'
+    if interval
+      if !(interval % daySeconds)
+        formatStr = 'YYYY-MM-DD'
+      else if !(interval % 3600)
+        formatStr = 'YYYY-MM-DD HH'
+      else if !(interval % 60)
+        formatStr = 'YYYY-MM-DD HH:mm'
+    _.map timeList, (time) ->
+      moment(time * 1000).format formatStr
+  getDataZoom = (total) ->
+    if total > 30
       {
-        name : data.key
-        data : arr
-        type : type
+        show : true
+        realtime : true
+        start : 0
+        end : 30
       }
-  exports.line = (obj, res, options = {}) ->
-    jqObj = $ obj
-    options = _.extend options, defaultStockOptions
-    options.series = covertData res  
-    jqObj.highcharts 'StockChart', options
-  exports.column = (obj, res, options = {}) ->
-    jqObj = $ obj
-    options = _.extend options, defaultStockOptions
-    if options.navigator
-      options.navigator.enabled = false if options.navigator.enabled?
     else
-      options.navigator = 
-        enabled : false
-    options.series = covertData res, 'column'
-    jqObj.highcharts 'StockChart', options
+      null
+
+  showChart = (dom, data, type, option) ->
+    return if !data?.length
+    timeList = mergeTimeList data
+    values = convertData data, timeList
+    timeList = formatTime timeList, option?.interval
+
+    series = _.map data, (item, i) ->
+      {
+        name : item.key
+        type : type
+        data : values[i]
+      }
+    currentOptions = _.extend {}, defaultOption, {
+      legend :
+        data : _.pluck data, 'key'
+      dataZoom : getDataZoom timeList.length
+      xAxis : [
+        {
+          type : 'category'
+          boundaryGap : false
+          data : timeList
+        }
+      ]
+      series : series
+    }, option
+    myChart = echarts.init dom
+    myChart.setOption currentOptions, true
+  exports.line = (obj, data, option) ->
+    showChart $(obj).get(0), data, 'line', option
+  exports.column = (obj, data, option) ->
+    showChart $(obj).get(0), data, 'bar', option
 
 
-  exports.pie = (obj, res, options = {}) ->
-    jqObj = $ obj
+  exports.pie = (obj, res) ->
+    # jqObj = $ obj
     data = _.map res, (data) ->
       values = _.pluck data.values, 'v'
       switch data.type
         when 'counter' then value = sum values
         when 'average' then value = average values
         when 'gauge' then value = _.last values
-      [data.key, value]
-    options = _.extend {
-      plotOptions :
-        pie : 
-          allowPointSelect : true
-          cursor : 'pointer'
-          dataLabels :
-            enabled : false
-          showInLegend : true
-    }, options
-    console.dir data
-    options.series = [
       {
-        type : 'pie'
-        data : data
+        name : data.key
+        value : value
       }
-    ]
-    obj.highcharts options
+
+    option =
+      title :
+        text : 'pie测试'
+        x : 'center'
+      tooltip :
+        trigger : 'item'
+        formatter : "{a} <br/>{b} : {c} ({d}%)"
+      legend :
+        orient : 'vertical'
+        x : 'left'
+        data : _.pluck data, 'name'
+      toolbox :
+        show : true
+        feature : 
+          mark : 
+            show : true
+          dataView :
+            show : true
+          restore :
+            show : true
+          saveAsImage : 
+            show : true
+      calculable : true
+      series : [
+        {
+          name : 'pie测试'
+          type : 'pie'
+          data : data
+        }
+      ]
+    myChart = echarts.init $(obj).get(0)
+    myChart.setOption option, true
+#     series : [
+#         {
+#             name:'访问来源',
+#             type:'pie',
+#             radius : '55%',
+#             center: ['50%', '60%'],
+#             data:[
+#                 {value:335, name:'直接访问'},
+#                 {value:310, name:'邮件营销'},
+#                 {value:234, name:'联盟广告'},
+#                 {value:135, name:'视频广告'},
+#                 {value:1548, name:'搜索引擎'}
+#             ]
+#         }
+#     ]
+# };
+                    
+
+    # options = _.extend {
+    #   plotOptions :
+    #     pie : 
+    #       allowPointSelect : true
+    #       cursor : 'pointer'
+    #       dataLabels :
+    #         enabled : false
+    #       showInLegend : true
+    # }, options
+    # console.dir data
+    # options.series = [
+    #   {
+    #     type : 'pie'
+    #     data : data
+    #   }
+    # ]
+    # obj.highcharts options
   return

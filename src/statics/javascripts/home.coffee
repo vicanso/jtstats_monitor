@@ -1,11 +1,12 @@
-seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart', 'echarts'], ($, _, Backbone, stats, chart, echarts) ->
+seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbone, stats, chart) ->
 
 
   pvStats = ->
+    interval = 600
     options =
       category : 'haproxy'
       date : 
-        start : -2
+        start : '2014-06-28'
       key : [
         {
           value : 'pv'
@@ -14,11 +15,19 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart', 'echarts'], ($,
           value : 'pv.category'
         }
       ]
+      point :
+        interval : interval
+
     stats.getChartData options, (err, data) ->
       if err
         console.error err
       else
-        chart.line $('.pvContainer'), data
+        chart.line $('.pvContainer'), data, {
+          interval : interval
+          title : 
+            text : 'PV统计'
+        }
+        # chart.line $('.pvContainer'), data
 
   resTimeStatusStats = ->
     options =
@@ -27,17 +36,14 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart', 'echarts'], ($,
         value : 'resTime.'
         type : 'reg'
       date :
-        start : -2
+        start : '2014-06-28'
       point : 
         interval : 300
     stats.getChartData options, (err, data) ->
       if err
         console.error err
       else
-        chart.pie $('.resTimeStatusContainer'), data, {
-          plotOptions :
-            enabled : false
-        }
+        chart.pie $('.resTimeStatusContainer'), data
 
   reqTotalStats = ->
     options =
@@ -45,16 +51,18 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart', 'echarts'], ($,
       key : 
         value : 'reqTotal'
       date :
-        start : -2
+        start : '2014-06-28'
     stats.getChartData options, (err, data) ->
-      console.dir data
       if err
         console.error err
       else
-        chart.column $('.reqTotalContainer'), data
+        chart.column $('.reqTotalContainer'), data, {
+          title : 
+            text : 'http请求总数'
+        }
 
-  # pvStats()
-  # resTimeStatusStats()
-  # reqTotalStats()
+  pvStats()
+  resTimeStatusStats()
+  reqTotalStats()
   if CONFIG.env == 'development'
     seajs.emit 'loadComplete'

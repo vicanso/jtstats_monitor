@@ -2,6 +2,8 @@ define 'stats', ['jquery', 'underscore'], (require, exports, module) ->
   $ = require 'jquery'
   _ = require 'underscore'
 
+  defaultInterval = 60
+
   ###*
    * [getChartData description]
    * @param  {[type]} options 用于配置获取的数据参数
@@ -37,6 +39,8 @@ define 'stats', ['jquery', 'underscore'], (require, exports, module) ->
    * @return {[type]}         [description]
   ###
   exports.getChartData = (options, cbf) ->
+    if !options.interval
+      options.interval = defaultInterval
     $.ajax({
       url : '/stats'
       dataType : 'json'
@@ -44,5 +48,11 @@ define 'stats', ['jquery', 'underscore'], (require, exports, module) ->
     }).success((res)->
       cbf null, res
     ).error cbf
+
+  exports.setDefaultInterval = (interval) ->
+    defaultInterval = interval
+  exports.getDefaultInterval = ->
+    defaultInterval
+
 
   return
