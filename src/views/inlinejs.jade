@@ -1,6 +1,8 @@
 script.
   (function(window){
     window.CONFIG = {
+      debug : #{DEBUG || 'false'},
+      jsDebug : #{JS_DEBUG || 0},
       env : '#{CONFIG.env}',
       staticUrlPrefix : '#{CONFIG.staticUrlPrefix}',
       template : '#{TEMPLATE}'

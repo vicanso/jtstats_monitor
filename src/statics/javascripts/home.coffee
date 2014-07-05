@@ -1,11 +1,11 @@
-seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbone, stats, chart) ->
+seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart', 'echarts'], ($, _, Backbone, stats, chart, echarts) ->
 
 
   pvStats = ->
     options =
       category : 'haproxy'
       date : 
-        start : -1
+        start : -2
       key : [
         {
           value : 'pv'
@@ -27,7 +27,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
         value : 'resTime.'
         type : 'reg'
       date :
-        start : -1
+        start : -2
       point : 
         interval : 300
     stats.getChartData options, (err, data) ->
@@ -44,15 +44,17 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
       category : 'haproxy'
       key : 
         value : 'reqTotal'
+      date :
+        start : -2
     stats.getChartData options, (err, data) ->
       console.dir data
       if err
         console.error err
       else
-        chart.line $('.reqTotalContainer'), data
+        chart.column $('.reqTotalContainer'), data
 
   # pvStats()
-  resTimeStatusStats()
+  # resTimeStatusStats()
   # reqTotalStats()
   if CONFIG.env == 'development'
     seajs.emit 'loadComplete'

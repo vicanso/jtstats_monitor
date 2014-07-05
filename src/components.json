@@ -4,8 +4,7 @@
       "/components/jquery/dist/jquery.js",
       "/components/underscore/underscore.js",
       "/components/backbone/backbone.js",
-      "/components/highstock/highstock.js",
-      "/components/highstock/exporting.js",
+      "/components/echarts/echarts.js",
       "/components/moment/moment.js",
       "/components/async/lib/async.js",
       "/javascripts/global.js",
@@ -19,7 +18,7 @@
       "/components/normalize.css/normalize.css",
       "/stylesheets/home.css"
     ],
-    "modifiedAt": "2014-06-30 17:51:29"
+    "modifiedAt": "2014-07-01 21:46:58"
   },
   "undefined": {
     "js": [],
