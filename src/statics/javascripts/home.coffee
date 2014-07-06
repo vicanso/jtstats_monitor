@@ -43,7 +43,10 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
       if err
         console.error err
       else
-        chart.pie $('.resTimeStatusContainer'), data
+        chart.pie $('.resTimeStatusContainer'), data, {
+          title : 
+            text : 'http响应时间'
+        }
 
   reqTotalStats = ->
     options =

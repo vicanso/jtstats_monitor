@@ -32,6 +32,23 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     ]
 
 
+  defaultPieOption =
+    tooltip :
+      trigger : 'item'
+      formatter : "{a} <br/>{b} : {c} ({d}%)"
+    toolbox :
+      show : true
+      feature :
+        mark :
+          show : true
+        dataView :
+          show : true
+        restore :
+          show : true
+        saveAsImage :
+          show : true
+      calculable : true
+
 
   ###*
    * [sum description]
@@ -51,15 +68,7 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     total = sum data
     Math.round total / data.length
 
-  # covertData = (res, type = 'spline') ->
-  #   _.map res, (data) ->
-  #     arr = _.map data.values, (point) ->
-  #       [point.t * 1000, point.v]
-  #     {
-  #       name : data.key
-  #       data : arr
-  #       type : type
-  #     }
+
 
   mergeTimeList = (data) -> 
     tmpArrList = _.map data, (item) ->
@@ -101,8 +110,8 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
       {
         show : true
         realtime : true
-        start : 0
-        end : 30
+        start : 80
+        end : 100
       }
     else
       null
@@ -140,8 +149,7 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     showChart $(obj).get(0), data, 'bar', option
 
 
-  exports.pie = (obj, res) ->
-    # jqObj = $ obj
+  exports.pie = (obj, res, option) ->
     data = _.map res, (data) ->
       values = _.pluck data.values, 'v'
       switch data.type
@@ -152,72 +160,17 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
         name : data.key
         value : value
       }
-
-    option =
-      title :
-        text : 'pie测试'
-        x : 'center'
-      tooltip :
-        trigger : 'item'
-        formatter : "{a} <br/>{b} : {c} ({d}%)"
+    option = _.extend {}, defaultPieOption, {
       legend :
-        orient : 'vertical'
-        x : 'left'
         data : _.pluck data, 'name'
-      toolbox :
-        show : true
-        feature : 
-          mark : 
-            show : true
-          dataView :
-            show : true
-          restore :
-            show : true
-          saveAsImage : 
-            show : true
-      calculable : true
       series : [
         {
-          name : 'pie测试'
+          name : option?.title?.text
           type : 'pie'
           data : data
         }
       ]
+    }, option
     myChart = echarts.init $(obj).get(0)
     myChart.setOption option, true
-#     series : [
-#         {
-#             name:'访问来源',
-#             type:'pie',
-#             radius : '55%',
-#             center: ['50%', '60%'],
-#             data:[
-#                 {value:335, name:'直接访问'},
-#                 {value:310, name:'邮件营销'},
-#                 {value:234, name:'联盟广告'},
-#                 {value:135, name:'视频广告'},
-#                 {value:1548, name:'搜索引擎'}
-#             ]
-#         }
-#     ]
-# };
-                    
-
-    # options = _.extend {
-    #   plotOptions :
-    #     pie : 
-    #       allowPointSelect : true
-    #       cursor : 'pointer'
-    #       dataLabels :
-    #         enabled : false
-    #       showInLegend : true
-    # }, options
-    # console.dir data
-    # options.series = [
-    #   {
-    #     type : 'pie'
-    #     data : data
-    #   }
-    # ]
-    # obj.highcharts options
   return
