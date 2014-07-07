@@ -12,8 +12,8 @@ html(lang='zh-CN')
     title #{title}
     include ./inlinejs
     //CSS_FILES_CONTAINER
-    - fileImporter.import('/components/normalize.css/normalize.css');
-    - fileImporter.import(['/components/jquery/dist/jquery.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/echarts/echarts.js', '/components/moment/moment.js', '/components/async/lib/async.js']);
+    - fileImporter.import('/components/bootstrap/dist/css/bootstrap.css');
+    - fileImporter.import(['/components/jquery/dist/jquery.js', '/components/bootstrap/dist/js/bootstrap.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/echarts/echarts.js', '/components/moment/moment.js', '/components/async/lib/async.js']);
     - fileImporter.import(['/javascripts/global.js']);
     - fileImporter.import(['/components/seajs/sea.js', '/javascripts/sea_config.js'])
     if CONFIG.env == 'development'

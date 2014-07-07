@@ -29,6 +29,7 @@ module.exports.init = (uri, options = {}) ->
     logger.info "#{uri} disconnected"
 
 
+
 ###*
  * [model 获取mongoose的model]
  * @param  {[type]} collection [description]
@@ -57,6 +58,19 @@ module.exports.model = (collection) ->
     modelDict[collection] = model
     model
 
+module.exports.getCollectionNames = (cbf) ->
+  return cbf new Error 'the db is not init!' if !client
+  client.db.collectionNames (err, names) ->
+    if err
+      cbf err
+    else
+      result = []
+      _.each names, (info) ->
+        infos = info.name.split '.'
+        infos.shift()
+        result.push infos.join('.') if _.first(infos) != 'system'
+      cbf null, result
+
 
 ###*
  * [getModel 获取model]
@@ -82,3 +96,4 @@ getModel = (collection) ->
   model = client.model collection, schema
   modelDict[collection] = model
   model
+

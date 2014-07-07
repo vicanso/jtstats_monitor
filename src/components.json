@@ -2,6 +2,7 @@
   "home": {
     "js": [
       "/components/jquery/dist/jquery.js",
+      "/components/bootstrap/dist/js/bootstrap.js",
       "/components/underscore/underscore.js",
       "/components/backbone/backbone.js",
       "/components/echarts/echarts.js",
@@ -15,10 +16,10 @@
       "/javascripts/home.js"
     ],
     "css": [
-      "/components/normalize.css/normalize.css",
+      "/components/bootstrap/dist/css/bootstrap.css",
       "/stylesheets/home.css"
     ],
-    "modifiedAt": "2014-07-01 21:46:58"
+    "modifiedAt": "2014-07-07 10:19:59"
   },
   "undefined": {
     "js": [],

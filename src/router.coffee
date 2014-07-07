@@ -41,6 +41,10 @@ routeInfos = [
     route : '/stats'
     handler : controllers.stats
   }
+  {
+    route : '/collection/:collection'
+    handler : controllers.collection
+  }
 ]
 
 
