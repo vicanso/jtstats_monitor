@@ -2,14 +2,21 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
 
 
   MainView = Backbone.View.extend {
+    showChartView : (data) ->
+      query = _.pick data, ['category', 'key', 'date', 'fill', 'point']
+      stats.getChartData query, (err, data) ->
+        console.dir data
     showStatsAddView : ->
       @currentView.remove() if @currentView
       obj = $ '<div class="addViewContainer" />'
       obj.appendTo @$el
       seajs.use 'StatsAddView', (StatsAddView) =>
-        @currentView = new StatsAddView {
+        statsView = new StatsAddView {
           el : obj
         }
+        statsView.on 'preview', (data) =>
+          @showChartView data
+        @currentView = statsView
   }
 
   mainView = new MainView {

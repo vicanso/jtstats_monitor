@@ -87,6 +87,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       'click .keySelector .dropdown-menu li' : 'selectKey'
       'click .typeSelector .dropdown-menu li' : 'selectType'
       'click .dateList .btn' : 'selectDate'
+      'click .function .preview' : 'preview'
     initialize : ->
       @render()
     getSelector : (items, itemClass, tips) ->
@@ -138,7 +139,26 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       inputs = @$el.find '.dateRow .form-control'
       inputs.eq(0).val start
       inputs.eq(1).val end
-
+    preview : ->
+      inputs = @$el.find 'input'
+      notFillItemIndex = -1
+      arr = _.map inputs, (input, i) ->
+        input = $ input
+        val = input.val().trim()
+        notFillItemIndex = i if !val && !~notFillItemIndex
+        val
+      if notFillItemIndex != inputs.length - 1
+        inputs.eq(notFillItemIndex).focus()
+        return
+      data = 
+        category : arr[0]
+        key : 
+          value : arr[1]
+        type : arr[2]
+        date :
+          start : arr[3]
+          end : arr[4]
+      @trigger 'preview', data
     render : ->
       html = '<h1 class="page-header">Add</h1>' +
         '<div class="row selectorList">' +

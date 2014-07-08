@@ -42,10 +42,11 @@ getStatsData = (query, key, cbf) ->
 
   getDate = (date) ->
     formatDate = ''
+    console.dir date
     if date
       if date == 'currentMonth'
         formatDate = now.clone().date(1).format 'YYYY-MM-DD'
-      else if date[0] != '-'
+      else if date.length == 10
         formatDate = date
       else
         date = GLOBAL.parseInt date
@@ -63,6 +64,7 @@ getStatsData = (query, key, cbf) ->
     value = key.value
     value = new RegExp value, 'gi' if key.type == 'reg'
     conditions.key = value
+  logger.info conditions
   async.waterfall [
     (cbf) ->
       mongodb.model(collection).find conditions, cbf
