@@ -42,8 +42,8 @@ routeInfos = [
     handler : controllers.stats
   }
   {
-    route : '/collection/:collection'
-    handler : controllers.collection
+    route : '/collection/:collection/keys'
+    handler : controllers.collection.getKeys
   }
 ]
 

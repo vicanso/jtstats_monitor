@@ -43,7 +43,9 @@ getStatsData = (query, key, cbf) ->
   getDate = (date) ->
     formatDate = ''
     if date
-      if date[0] != '-'
+      if date == 'currentMonth'
+        formatDate = now.clone().date(1).format 'YYYY-MM-DD'
+      else if date[0] != '-'
         formatDate = date
       else
         date = GLOBAL.parseInt date
