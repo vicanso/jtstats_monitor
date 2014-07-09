@@ -60,11 +60,11 @@ getStatsData = (query, key, cbf) ->
       '$lte' : getDate date.end
   else
     conditions.date = now.format 'YYYY-MM-DD'
+  logger.info conditions
   if key
     value = key.value
     value = new RegExp value, 'gi' if key.type == 'reg'
     conditions.key = value
-  logger.info conditions
   async.waterfall [
     (cbf) ->
       mongodb.model(collection).find conditions, cbf

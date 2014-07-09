@@ -2,21 +2,38 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
 
 
   MainView = Backbone.View.extend {
-    showChartView : (data) ->
-      query = _.pick data, ['category', 'key', 'date', 'fill', 'point']
-      stats.getChartData query, (err, data) ->
-        console.dir data
+    showError : (msg) ->
+      obj = $ '<div class="alert alert-danger">' + msg + '</div>'
+      obj.appendTo @$el
+      _.delay ->
+        obj.remove()
+      , 5000
+    showChartView : (options) ->
+      @chartView.remove() if @chartView
+      obj = $ '<div class="chartView" />'
+      obj.appendTo @$el
+      seajs.use 'ChartView', (ChartView) =>
+        chartView = new ChartView {
+          el : obj
+        }
+        chartView.setOptions options
+        chartView.show()
+        @chartView = chartView
     showStatsAddView : ->
-      @currentView.remove() if @currentView
+      @chartView.remove() if @chartView
+      @statsAddView.remove() if @statsAddView
       obj = $ '<div class="addViewContainer" />'
       obj.appendTo @$el
+
       seajs.use 'StatsAddView', (StatsAddView) =>
         statsView = new StatsAddView {
           el : obj
         }
         statsView.on 'preview', (data) =>
           @showChartView data
-        @currentView = statsView
+        statsView.on 'error', (msg) =>
+          @showError msg
+        @statsAddView = statsView
   }
 
   mainView = new MainView {
@@ -39,6 +56,29 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
     el : $ '#homeContainer .statsList'
   }
 
+
+  # seajs.use 'ChartView', (ChartView) ->
+  #   interval = 600
+  #   options =
+  #     category : 'haproxy'
+  #     date : 
+  #       start : '2014-06-28'
+  #     key : [
+  #       {
+  #         value : 'pv'
+  #       }
+  #       {
+  #         value : 'pv.category'
+  #       }
+  #     ]
+  #     point :
+  #       interval : interval
+
+  #   chartView = new ChartView {
+  #     el : $('.pvContainer')
+  #   }
+  #   chartView.setOptions options
+  #   chartView.show()
 
 
   pvStats = ->

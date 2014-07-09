@@ -86,16 +86,17 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       'click .collectionSelector .dropdown-menu li' : 'selectCollection'
       'click .keySelector .dropdown-menu li' : 'selectKey'
       'click .typeSelector .dropdown-menu li' : 'selectType'
+      'click .intervalSelector .dropdown-menu li' : 'selectInterval'
       'click .dateList .btn' : 'selectDate'
       'click .function .preview' : 'preview'
     initialize : ->
       @render()
-    getSelector : (items, itemClass, tips) ->
+    getSelector : (items, itemClass, tips, defaultValue = '') ->
       ulHtml = '<ul class="dropdown-menu" role="menu">'
       _.each items, (item) ->
-        ulHtml += '<li><a href="javascript:;">' + item + '</a></li>'
+        ulHtml += '<li><a href="javascript:;"><span class="glyphicon"></span>' + item + '</a></li>'
       ulHtml += '</ul>'
-      html = '<div class="col-xs-6 col-sm-4 ' + itemClass + '"><div class="input-group">' +
+      html = '<div class="col-xs-6 col-sm-4 ' + itemClass + ' selector"><div class="input-group">' +
         '<div class="input-group-btn">' +
           '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">' + 
             tips +
@@ -103,30 +104,49 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
           '</button>' +
           ulHtml + 
         '</div>' +
-        '<input type="text" class="form-control"></input>' +
+        '<input type="text" class="form-control" value="' + defaultValue + '"></input>' +
       '</div></div>'
       html
     getCollectionList : ->
       @getSelector JT_GLOBAL.collections, 'collectionSelector', '请选择Collection'
     getTypeList : ->
       @getSelector ['line', 'column', 'pie'], 'typeSelector', '请选择类型'
+    getIntervalList : ->
+      @getSelector ['1m', '10m', '30m', '1h', '2h', '6h', '12h', '1d'], 'intervalSelector', '请选择时间间隔(秒)', 60
     getKeyList : (keys) ->
       @getSelector keys, 'keySelector', '请选择key'
+
     showKeySelector : (collection) ->
       $.ajax({
         url : "/collection/#{collection}/keys"
         dataType : 'json'
       }).success((res)=>
-        html = @getKeyList res
+        obj = $ @getKeyList res
         selector = @$el.find('.selectorList').find('.keySelector')
-        selector.after html
+        isClickDropdownMenu = false
+        obj.find('.dropdown-menu').on 'click', ->
+          isClickDropdownMenu = true
+        obj.find('.input-group-btn').on 'hide.bs.dropdown', (e) ->
+          if isClickDropdownMenu
+            e.preventDefault()
+          isClickDropdownMenu = false
+          return
+        selector.after obj
         selector.remove()
       ).error (res) ->
     selectKey : (e) ->
-      key = $(e.target).text()
-      @$el.find('.keySelector input').val key
+      obj = $ e.target
+      obj.toggleClass 'selected'
+      obj.find('.glyphicon').toggleClass 'glyphicon-ok'
+      selectedItems = obj.closest('.dropdown-menu').find '.selected'
+      arr = _.map selectedItems, (item) ->
+        $(item).text()
+      @$el.find('.keySelector input').val arr.join ','
+      e.preventDefault()
+
     selectType : (e) ->
-      type = $(e.target).text()
+      obj = $ e.target
+      type = obj.text()
       @$el.find('.typeSelector input').val type
     selectCollection : (e) ->
       collection = $(e.target).text()
@@ -139,6 +159,16 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       inputs = @$el.find '.dateRow .form-control'
       inputs.eq(0).val start
       inputs.eq(1).val end
+    selectInterval : (e) ->
+      interval = $(e.target).text()
+      unitValues = 
+        'm' : 60
+        'h' : 3600
+        'd' : 24 * 3600
+      unit = unitValues[interval.charAt(interval.length - 1).toLowerCase()]
+
+      @$el.find('.intervalSelector input').val window.parseInt(interval) * unit
+      
     preview : ->
       inputs = @$el.find 'input'
       notFillItemIndex = -1
@@ -147,28 +177,51 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
         val = input.val().trim()
         notFillItemIndex = i if !val && !~notFillItemIndex
         val
-      if notFillItemIndex != inputs.length - 1
+      if ~notFillItemIndex
         inputs.eq(notFillItemIndex).focus()
+        @trigger 'error', '请填写统计配置参数，不能为空！'
         return
+      getKey = (key) ->
+        _.map key.split(','), (key) ->
+          if key.charAt(0) == '/'
+            if key.charAt(key.length - 1) == '/'
+              key = key.substring 1, key.length - 1
+            else
+              key = key.substring 1
+            {
+              value : key
+              type : 'reg'
+            }
+          else
+            {
+              value : key
+            }
+
       data = 
         category : arr[0]
-        key : 
-          value : arr[1]
-        type : arr[2]
+        key : getKey arr[1]
+        point :
+          interval : arr[2]
+        type : arr[3]
         date :
-          start : arr[3]
-          end : arr[4]
+          start : arr[4]
+          end : arr[5]
+        name : arr[6]
       @trigger 'preview', data
     render : ->
       html = '<h1 class="page-header">Add</h1>' +
         '<div class="row selectorList">' +
           @getCollectionList() +
           @getKeyList() +
+          @getIntervalList() +
+        '</div>' +
+        '<div class="row selectorList">' +
           @getTypeList() +
         '</div>' +
         dateRowHtml +
-        functionHtml 
+        functionHtml
       @$el.html html
+
 
   }
 

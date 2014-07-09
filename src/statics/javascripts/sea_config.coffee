@@ -4,7 +4,8 @@ seajs.config {
     'jtLazyLoad' : 'components/jtlazy_load/dest/jtlazy_load.js'
     'stats' : 'modules/stats.js'
     'chart' : 'modules/chart.js'
-    'StatsAddView' : 'javascripts/stats_add_view.js'
+    'StatsAddView' : 'modules/stats_add_view.js'
+    'ChartView' : 'modules/chart_view.js'
 }
 
 

@@ -22,7 +22,6 @@ initMongod = ->
 
 requestStatistics = ->
   requestTotal = 0
-  tooManyReq = new Error 'too many request'
   (req, res, next) ->
     requestTotal++
     startAt = process.hrtime()
