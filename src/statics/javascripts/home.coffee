@@ -52,9 +52,10 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
 
 
 
-  new StatsListView {
+  statsListView = new StatsListView {
     el : $ '#homeContainer .statsList'
   }
+  statsListView.add()
 
 
   # seajs.use 'ChartView', (ChartView) ->

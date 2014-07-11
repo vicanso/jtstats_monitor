@@ -83,12 +83,14 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
 
   StatsAddView = Backbone.View.extend {
     events : ->
-      'click .collectionSelector .dropdown-menu li' : 'selectCollection'
+      'click .categorySelector .dropdown-menu li' : 'selectCategory'
       'click .keySelector .dropdown-menu li' : 'selectKey'
       'click .typeSelector .dropdown-menu li' : 'selectType'
       'click .intervalSelector .dropdown-menu li' : 'selectInterval'
       'click .dateList .btn' : 'selectDate'
       'click .function .preview' : 'preview'
+      'click .addCategory' : 'addCategory'
+      'click .deleteCategory' : 'deleteCategory'
     initialize : ->
       @render()
     getSelector : (items, itemClass, tips, defaultValue = '') ->
@@ -107,14 +109,27 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
         '<input type="text" class="form-control" value="' + defaultValue + '"></input>' +
       '</div></div>'
       html
-    getCollectionList : ->
-      @getSelector JT_GLOBAL.collections, 'collectionSelector', '请选择Collection'
+    getCategoryList : ->
+      @getSelector JT_GLOBAL.collections, 'categorySelector', '请选择分类'
     getTypeList : ->
       @getSelector ['line', 'column', 'pie'], 'typeSelector', '请选择类型'
     getIntervalList : ->
       @getSelector ['1m', '10m', '30m', '1h', '2h', '6h', '12h', '1d'], 'intervalSelector', '请选择时间间隔(秒)', 60
     getKeyList : (keys) ->
       @getSelector keys, 'keySelector', '请选择key'
+
+    addCategory : ->
+      html = '<div class="row selectorList">' +
+        @getCategoryList() +
+        @getKeyList() +
+        '<div class="col-xs-6 col-sm-4"><button class="deleteCategory btn btn-warning">删除</button></div>' +
+      '</div>'
+
+      @$el.find('.selectorList:last').before html
+      @
+    deleteCategory : (e) ->
+      $(e.target).closest('.selectorList').remove()
+      @
 
     showKeySelector : (collection) ->
       $.ajax({
@@ -134,6 +149,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
         selector.after obj
         selector.remove()
       ).error (res) ->
+      @
     selectKey : (e) ->
       obj = $ e.target
       obj.toggleClass 'selected'
@@ -148,10 +164,10 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       obj = $ e.target
       type = obj.text()
       @$el.find('.typeSelector input').val type
-    selectCollection : (e) ->
-      collection = $(e.target).text()
-      @$el.find('.collectionSelector input').val collection
-      @showKeySelector collection
+    selectCategory : (e) ->
+      category = $(e.target).text()
+      @$el.find('.categorySelector input').val category
+      @showKeySelector category
     selectDate : (e) ->
       obj = $ e.target
       start = obj.data 'start'
@@ -211,11 +227,12 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
     render : ->
       html = '<h1 class="page-header">Add</h1>' +
         '<div class="row selectorList">' +
-          @getCollectionList() +
+          @getCategoryList() +
           @getKeyList() +
-          @getIntervalList() +
+          '<div class="col-xs-6 col-sm-4"><button class="addCategory btn btn-primary">增加</button></div>' +
         '</div>' +
         '<div class="row selectorList">' +
+          @getIntervalList() +
           @getTypeList() +
         '</div>' +
         dateRowHtml +

@@ -13,12 +13,13 @@
       "/javascripts/sea_config.js",
       "/modules/stats.js",
       "/modules/chart.js",
+      "/modules/stats_add_view.js",
       "/javascripts/home.js"
     ],
     "css": [
       "/components/bootstrap/dist/css/bootstrap.css",
       "/stylesheets/home.css"
     ],
-    "modifiedAt": "2014-07-09 17:53:33"
+    "modifiedAt": "2014-07-10 21:24:40"
   }
 }
