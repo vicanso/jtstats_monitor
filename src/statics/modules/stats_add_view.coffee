@@ -131,13 +131,13 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       $(e.target).closest('.selectorList').remove()
       @
 
-    showKeySelector : (collection) ->
+    showKeySelector : (collection, index) ->
       $.ajax({
         url : "/collection/#{collection}/keys"
         dataType : 'json'
       }).success((res)=>
         obj = $ @getKeyList res
-        selector = @$el.find('.selectorList').find('.keySelector')
+        selector = @$el.find('.selectorList').find('.keySelector').eq index
         isClickDropdownMenu = false
         obj.find('.dropdown-menu').on 'click', ->
           isClickDropdownMenu = true
@@ -157,7 +157,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       selectedItems = obj.closest('.dropdown-menu').find '.selected'
       arr = _.map selectedItems, (item) ->
         $(item).text()
-      @$el.find('.keySelector input').val arr.join ','
+      obj.closest('.keySelector').find('input').val arr.join ','
       e.preventDefault()
 
     selectType : (e) ->
@@ -165,9 +165,12 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       type = obj.text()
       @$el.find('.typeSelector input').val type
     selectCategory : (e) ->
-      category = $(e.target).text()
-      @$el.find('.categorySelector input').val category
-      @showKeySelector category
+      obj = $ e.target
+      category = obj.text()
+      categorySelector = obj.closest '.categorySelector'
+      categorySelector.find('input').val category
+      index = @$el.find('.categorySelector').index categorySelector
+      @showKeySelector category, index
     selectDate : (e) ->
       obj = $ e.target
       start = obj.data 'start'
