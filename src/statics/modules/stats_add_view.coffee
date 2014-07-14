@@ -119,7 +119,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       @getSelector keys, 'keySelector', '请选择key'
 
     addCategory : ->
-      html = '<div class="row selectorList">' +
+      html = '<div class="row selectorList stats">' +
         @getCategoryList() +
         @getKeyList() +
         '<div class="col-xs-6 col-sm-4"><button class="deleteCategory btn btn-warning">删除</button></div>' +
@@ -215,26 +215,36 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
             {
               value : key
             }
+      setting = @$el.find '.selectorList.setting'
+      dateList = @$el.find '.dateRow input'
+      stats = _.map @$el.find('.selectorList.stats'), (item) ->
+        obj = $ item
+        inputs = obj.find 'input'
+        {
+          category : inputs.eq(0).val().trim()
+          key : getKey inputs.eq(1).val().trim()
+        }
 
-      data = 
-        category : arr[0]
-        key : getKey arr[1]
+      data =
+        stats : stats
         point :
-          interval : arr[2]
-        type : arr[3]
+          interval : setting.find('.intervalSelector input').val().trim()
+        type : setting.find('.typeSelector input').val().trim()
         date :
-          start : arr[4]
-          end : arr[5]
-        name : arr[6]
+          start : dateList.eq(0).val().trim()
+          end : dateList.eq(1).val().trim()
+        name : @$el.find('.function input').val().trim()
+
+
       @trigger 'preview', data
     render : ->
       html = '<h1 class="page-header">Add</h1>' +
-        '<div class="row selectorList">' +
+        '<div class="row selectorList stats">' +
           @getCategoryList() +
           @getKeyList() +
           '<div class="col-xs-6 col-sm-4"><button class="addCategory btn btn-primary">增加</button></div>' +
         '</div>' +
-        '<div class="row selectorList">' +
+        '<div class="row selectorList setting">' +
           @getIntervalList() +
           @getTypeList() +
         '</div>' +

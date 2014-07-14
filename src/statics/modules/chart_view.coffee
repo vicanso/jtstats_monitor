@@ -1,6 +1,8 @@
-define 'ChartView', ['underscore', 'stats', 'chart'], (require, exports, module) ->
+define 'ChartView', ['underscore', 'stats', 'chart', 'async'], (require, exports, module) ->
   stats = require 'stats'
   chart = require 'chart'
+  async = require 'async'
+  _ = require 'underscore'
 
 
   ChartView = Backbone.View.extend {
@@ -13,17 +15,23 @@ define 'ChartView', ['underscore', 'stats', 'chart'], (require, exports, module)
         return
       return if @_isLoading
       @_isLoading = true
-      query = _.pick options, ['category', 'key', 'date', 'fill', 'point']
-      interval = query.point?.interval
+      baseQuery = _.pick options, ['date', 'fill', 'point']
+      interval = baseQuery.point?.interval
       type = options.type || 'line'
-      stats.getChartData query, (err, data) =>
+      name = options.name
+      funcs = _.map options.stats, (statsOptions) ->
+        (cbf) ->
+          statsOptions = _.extend {}, baseQuery, statsOptions
+          stats.getChartData statsOptions, cbf
+      async.parallel funcs, (err, data) =>
         @_isLoading = false
         if err
           alert err
         else
+          data = _.flatten data, true
           chart[type] @$el, data, {
             title : 
-              text : options.name || '未定义'
+              text : name || '未定义'
             interval : interval
           }
 
