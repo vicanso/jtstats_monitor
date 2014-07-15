@@ -89,6 +89,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
       'click .intervalSelector .dropdown-menu li' : 'selectInterval'
       'click .dateList .btn' : 'selectDate'
       'click .function .preview' : 'preview'
+      'click .function .save' : 'save'
       'click .addCategory' : 'addCategory'
       'click .deleteCategory' : 'deleteCategory'
     initialize : ->
@@ -188,7 +189,25 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
 
       @$el.find('.intervalSelector input').val window.parseInt(interval) * unit
       
+
     preview : ->
+      config = @getConfig()
+      @trigger 'preview', config if config
+    save : ->
+      config = @getConfig()
+      if config
+        $.ajax({
+          url : '/config'
+          type : 'post'
+          dataType : 'json'
+          contentType : 'application/json'
+          data : JSON.stringify config
+        }).success((res)->
+          console.dir res
+        ).error (res) ->
+          console.dir res
+
+    getConfig : ->
       inputs = @$el.find 'input'
       notFillItemIndex = -1
       arr = _.map inputs, (input, i) ->
@@ -235,8 +254,8 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
           end : dateList.eq(1).val().trim()
         name : @$el.find('.function input').val().trim()
 
-
-      @trigger 'preview', data
+      data
+      # @trigger 'preview', data
     render : ->
       html = '<h1 class="page-header">Add</h1>' +
         '<div class="row selectorList stats">' +

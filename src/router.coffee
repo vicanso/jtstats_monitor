@@ -45,6 +45,11 @@ routeInfos = [
     route : '/collection/:collection/keys'
     handler : controllers.collection.getKeys
   }
+  {
+    route : '/config'
+    type : 'post'
+    handler : controllers.config
+  }
 ]
 
 

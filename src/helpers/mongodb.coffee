@@ -3,6 +3,7 @@ Schema = mongoose.Schema
 _ = require 'underscore'
 requireTree = require 'require-tree'
 logger = require('./logger') __filename
+path = require 'path'
 
 client = null
 modelDict = {}
@@ -27,7 +28,25 @@ module.exports.init = (uri, options = {}) ->
     logger.info "#{uri} connected"
   client.on 'disconnected', ->
     logger.info "#{uri} disconnected"
+  @initModels path.join __dirname, '../models'
 
+
+
+###*
+ * [initModels 初始化models]
+ * @param  {[type]} modelPath [description]
+ * @return {[type]}           [description]
+###
+module.exports.initModels = (modelPath) ->
+  throw new Error 'the db is not init!' if !client
+  models = requireTree modelPath
+  _.each models, (model, name) ->
+    name = model.name || (name.charAt(0).toUpperCase() + name.substring 1)
+    schema = new Schema model.schema, model.options
+    if model.indexes
+      _.each model.indexes, (indexOptions) ->
+        schema.index.apply schema, indexOptions
+    modelDict[name] = client.model name, schema
 
 
 ###*
