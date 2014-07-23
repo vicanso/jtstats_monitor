@@ -4,8 +4,8 @@
   $selectorHeight = 28px
   height $selectorHeight
   line-height @height
-  border 1px solid #ececec
-  padding 0 10px
+  border 1px solid #ccc
+  padding-left 10px
   border-radius 3px
   position relative
   &:hover
@@ -14,7 +14,14 @@
   .glyphicon
     color #0c91c8
     font-size 13px
-
+  .edit
+    display block
+    width 30px
+    text-align center
+    background-color #eee
+    border-left 1px solid #ccc
+    .glyphicon
+      color #555
   .unchecked, .dot
     display inline-block
     position relative
@@ -25,6 +32,11 @@
     width 12px
     height @width
     border 1px solid #5c5e74
+  .placeholder
+    margin-left 10px
+    color #aaa
+  .edit
+    float right
   .dot
     width 8px
     height @width
@@ -77,10 +89,10 @@
     display inline-block
     color #333
     background-color #fff
-    border-right 1px solid #ccc
+    border-left 1px solid #ccc
     text-decoration none
     padding 3px 10px
     &:hover, &:active
       background-color #eee
-    &:last-child
+    &:first-child
       border-right none

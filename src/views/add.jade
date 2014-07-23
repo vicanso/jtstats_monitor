@@ -6,10 +6,12 @@ block bodyContainer
     include ./header
     .pageContainer
       h1.header Add
-      .statsType 统计类型：
+      .statsType 
+        span.name 统计类型：
         .uiBtnGroup
           a.btn(href='javascript:;') 线状图
           a.btn(href='javascript:;') 柱状图
           a.btn(href='javascript:;') 饼图
-          a.btn(href='javascript:;') 线状图
-  - fileImporter.import(['/stylesheets/add.css']);
+          a.btn(href='javascript:;') 实时线状图
+      .categorySelector
+  - fileImporter.import(['/stylesheets/add.css', '/javascripts/add.js']);
