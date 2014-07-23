@@ -15,7 +15,7 @@ module.exports = (req, res, cbf) ->
     else
       cbf null, {
         viewData :
-          page : 'home'
+          page : 'add'
           globalVariable : 
             collections : result.collections
       }, headerOptions

@@ -6,16 +6,17 @@ module.exports = (req, res, cbf) ->
   maxAge = 0 if config.env == 'development'
   headerOptions = 
     'Cache-Control' : "public, max-age=#{maxAge}"
+  async.waterfall [
+    (cbf) ->
+      mongodb.model('Config').find {}, cbf
+    (docs, cbf) ->
+      cbf null, {
+        viewData :
+          page : 'configs'
+          configs : docs
+      }, headerOptions
+  ], cbf
   async.parallel {
     collections : (cbf) ->
       mongodb.getCollectionNames cbf
   }, (err, result) ->
-    if err
-      cbf err
-    else
-      cbf null, {
-        viewData :
-          page : 'home'
-          globalVariable : 
-            collections : result.collections
-      }, headerOptions

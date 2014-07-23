@@ -26,6 +26,8 @@ module.exports.init = (uri, options = {}) ->
   client = mongoose.createConnection uri, options
   client.on 'connected', ->
     logger.info "#{uri} connected"
+
+
   client.on 'disconnected', ->
     logger.info "#{uri} disconnected"
   @initModels path.join __dirname, '../models'
@@ -87,7 +89,8 @@ module.exports.getCollectionNames = (cbf) ->
       _.each names, (info) ->
         infos = info.name.split '.'
         infos.shift()
-        result.push infos.join('.') if _.first(infos) != 'system'
+        name = infos.join '.'
+        result.push name if _.first(infos) != 'system' && name != 'configs'
       cbf null, result
 
 

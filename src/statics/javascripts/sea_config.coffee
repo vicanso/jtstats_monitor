@@ -6,6 +6,9 @@ seajs.config {
     'chart' : 'modules/chart.js'
     'StatsAddView' : 'modules/stats_add_view.js'
     'ChartView' : 'modules/chart_view.js'
+    'user' : 'modules/user.js'
+    'menu' : 'modules/menu.js'
+    'widget' : 'modules/widget.js'
 }
 
 

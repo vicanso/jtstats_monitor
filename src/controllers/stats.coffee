@@ -36,7 +36,7 @@ getStatsData = (query, key, cbf) ->
   point = query.point
   interval = GLOBAL.parseInt point?.interval
   interval = 60 if _.isNaN interval
-  interval = 10 if interval < 10
+  # interval = 10 if interval < 10
   conditions = {}
   now = moment()
 
@@ -70,7 +70,14 @@ getStatsData = (query, key, cbf) ->
       mongodb.model(collection).find conditions, cbf
     (docs, cbf) ->
       docs = mergeDocs docs
-      cbf null, arrangePoints docs, interval, fill
+      if interval < 0
+        _.each docs, (doc) ->
+          doc.values = [_.last doc.values]
+        cbf null, docs
+      else if interval > 0
+        cbf null, arrangePoints docs, interval, fill
+      else
+        cbf null, docs
   ], cbf
 
 ###*
@@ -162,4 +169,4 @@ arrangePoints = (docs, interval, fill) ->
     result = _.compact result if !fill
     doc.values = result
     doc
-  
+  docs

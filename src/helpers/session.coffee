@@ -9,6 +9,8 @@ storeOptions =
   client : redis
   ttl : sessionConfig.ttl
 session = expressSession {
+  resave : false
+  saveUninitialized : false
   secret : sessionConfig.secret
   key : sessionConfig.key
   store : new RedisStore storeOptions

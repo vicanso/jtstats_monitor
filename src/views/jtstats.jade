@@ -1,0 +1,8 @@
+extends ./layout
+
+block bodyContainer
+  include ./menu
+  #contentContainer
+    include ./header
+    //- .selector
+  - fileImporter.import(['/stylesheets/jtstats.css', '/javascripts/jtstats.js']);

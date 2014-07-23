@@ -18,8 +18,35 @@
     ],
     "css": [
       "/components/bootstrap/dist/css/bootstrap.css",
+      "/stylesheets/header.css",
+      "/stylesheets/slider.css",
       "/stylesheets/home.css"
     ],
-    "modifiedAt": "2014-07-10 21:24:40"
+    "modifiedAt": "2014-07-20 16:12:28"
+  },
+  "configs": {
+    "js": [
+      "/components/jquery/dist/jquery.js",
+      "/components/bootstrap/dist/js/bootstrap.js",
+      "/components/underscore/underscore.js",
+      "/components/backbone/backbone.js",
+      "/components/echarts/echarts.js",
+      "/components/moment/moment.js",
+      "/components/async/lib/async.js",
+      "/javascripts/global.js",
+      "/components/seajs/sea.js",
+      "/javascripts/sea_config.js",
+      "/modules/stats.js",
+      "/modules/chart.js",
+      "/modules/stats_add_view.js",
+      "/javascripts/home.js"
+    ],
+    "css": [
+      "/components/bootstrap/dist/css/bootstrap.css",
+      "/stylesheets/header.css",
+      "/stylesheets/slider.css",
+      "/stylesheets/home.css"
+    ],
+    "modifiedAt": "2014-07-16 22:24:46"
   }
 }

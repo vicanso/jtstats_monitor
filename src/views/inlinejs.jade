@@ -27,11 +27,15 @@ script.
       }
     };
     window.TIME_LINE.time('html');
-    window.onerror = function(msg, url , line){
+    window.onerror = function(msg, url , line, row, err){
+      var stack = '';
+      if(err){
+        stack = err.stack;
+      }
       if(CONFIG.env === 'development'){
-        alert('msg:' + msg + ', url:' + url + ', line:' + line);
+        alert('msg:' + msg + ', url:' + url + ', line:' + line + ', row:' + row + ', stack:' + stack);
       }else{
-        $.post('/errorlog', {msg : msg, url : url, line : line});
+        $.post('/errorlog', {msg : msg, url : url, line : line, row : row, stack : stack});
       }
     };
   })(this);

@@ -113,7 +113,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
     getCategoryList : ->
       @getSelector JT_GLOBAL.collections, 'categorySelector', '请选择分类'
     getTypeList : ->
-      @getSelector ['line', 'column', 'pie'], 'typeSelector', '请选择类型'
+      @getSelector ['line', 'column', 'pie', 'gauge', 'columnFresh'], 'typeSelector', '请选择类型'
     getIntervalList : ->
       @getSelector ['1m', '10m', '30m', '1h', '2h', '6h', '12h', '1d'], 'intervalSelector', '请选择时间间隔(秒)', 60
     getKeyList : (keys) ->

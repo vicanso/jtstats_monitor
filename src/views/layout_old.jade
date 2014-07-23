@@ -9,12 +9,13 @@ html(lang='zh-CN')
     meta(name='keywords', content='')
     meta(name='description', content='')
     meta(name='author',content='小墨鱼 vicanso 腻味 tree')
-    title #{title || 'JTStats'}
+    title #{title}
     include ./inlinejs
     //CSS_FILES_CONTAINER
-    - fileImporter.import(['/components/normalize.css/normalize.css', '/stylesheets/global.css', '/stylesheets/icons.css', '/stylesheets/widget.css']);
-    - fileImporter.import(['/components/jquery/dist/jquery.js',  '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/echarts/echarts.js', '/components/moment/moment.js', '/components/async/lib/async.js']);
-    - fileImporter.import(['/components/seajs/sea.js', '/javascripts/sea_config.js']);
+    - fileImporter.import('/components/bootstrap/dist/css/bootstrap.css');
+    - fileImporter.import(['/components/jquery/dist/jquery.js', '/components/bootstrap/dist/js/bootstrap.js', '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/echarts/echarts.js', '/components/moment/moment.js', '/components/async/lib/async.js']);
+    - fileImporter.import(['/javascripts/global.js']);
+    - fileImporter.import(['/components/seajs/sea.js', '/javascripts/sea_config.js'])
     if CONFIG.env == 'development'
       - fileImporter.import('/javascripts/sea_dev.js');
   body

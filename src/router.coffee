@@ -9,7 +9,7 @@ if config.env != 'development'
   merger = new JTMerger require './merge.json'
   components = require './components.json'
 
-# session = require './helpers/session'
+session = require './helpers/session'
 
 addImporter = (req, res, next) ->
   fileImporter = new FileImporter merger
@@ -31,6 +31,20 @@ routeInfos = [
     type : 'post'
     handler : controllers.seajs
   }
+
+  {
+    route : '/jtstats'
+    handler : controllers.jtstats
+    middleware : [addImporter]
+    template : 'jtstats'
+  }
+  {
+    route : '/add'
+    handler : controllers.add
+    middleware : [addImporter]
+    template : 'add'
+  }
+
   {
     route : '/'
     handler : controllers.home
@@ -46,9 +60,21 @@ routeInfos = [
     handler : controllers.collection.getKeys
   }
   {
+    route : '/configs'
+    handler : controllers.configs
+    middleware : [addImporter]
+    template : 'configs'
+  }
+  {
     route : '/config'
     type : 'post'
     handler : controllers.config
+  }
+  {
+    route : '/user'
+    type : ['get', 'post']
+    middleware : [session]
+    handler : controllers.user
   }
 ]
 

@@ -1,0 +1,86 @@
+@import 'nib'
+
+.uiSelector
+  $selectorHeight = 28px
+  height $selectorHeight
+  line-height @height
+  border 1px solid #ececec
+  padding 0 10px
+  border-radius 3px
+  position relative
+  &:hover
+    .selectList
+      display block
+  .glyphicon
+    color #0c91c8
+    font-size 13px
+
+  .unchecked, .dot
+    display inline-block
+    position relative
+    margin-right 8px
+  .unchecked
+    top 2px
+    border-radius 3px
+    width 12px
+    height @width
+    border 1px solid #5c5e74
+  .dot
+    width 8px
+    height @width
+    top -1px
+    border-radius 20px
+    background-color #0c92c9
+  .items
+    .unchecked
+      visibility hidden
+  .selectList
+    display none
+    margin 0
+    padding 0
+    position absolute
+    left 0
+    top $selectorHeight + 1
+    border 1px solid #bfbfbf
+    padding 10px 15px
+    line-height 20px
+    box-shadow 0px 2px 8px #888
+    $arrowLeft = 7px
+    $arrowTop = -19px
+    .arrowTop1
+      position absolute
+      left $arrowLeft
+      top $arrowTop
+      width 0
+      height 3px
+      border 8px solid #fff
+      border-color transparent
+      border-bottom-color #bfbfbf
+    .arrowTop2
+      position absolute
+      left $arrowLeft
+      top $arrowTop + 1
+      width 0
+      height 3px
+      border 8px solid #fff
+      border-color transparent
+      border-bottom-color #fff
+    li
+      list-style none
+      padding 2px 0
+      cursor pointer
+.uiBtnGroup
+  border 1px solid #ccc
+  border-radius 3px
+  display inline-block
+  .btn
+    display inline-block
+    color #333
+    background-color #fff
+    border-right 1px solid #ccc
+    text-decoration none
+    padding 3px 10px
+    &:hover, &:active
+      background-color #eee
+    &:last-child
+      border-right none

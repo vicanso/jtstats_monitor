@@ -1,4 +1,5 @@
 config = require '../config'
+logger = require('./logger') __filename
 redisConfig = config.redis
 redis = require 'redis'
 client = redis.createClient redisConfig.port, redisConfig.host, {
@@ -6,12 +7,12 @@ client = redis.createClient redisConfig.port, redisConfig.host, {
 }
 
 client.on 'ready', ->
-  console.dir 'ready'
+  logger.info 'ready'
 
 client.on 'connect', ->
-  console.dir 'connect'
+  logger.info 'connect'
 
-client.on 'error', ->
-  console.dir 'error'
+client.on 'error', (args) ->
+  logger.error args
 
 module.exports = client

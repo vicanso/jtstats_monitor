@@ -23,17 +23,23 @@ define 'ChartView', ['underscore', 'stats', 'chart', 'async'], (require, exports
         (cbf) ->
           statsOptions = _.extend {}, baseQuery, statsOptions
           stats.getChartData statsOptions, cbf
-      async.parallel funcs, (err, data) =>
-        @_isLoading = false
-        if err
-          alert err
-        else
-          data = _.flatten data, true
-          chart[type] @$el, data, {
-            title : 
-              text : name || '未定义'
-            interval : interval
-          }
+      getData = (cbf) =>
+        async.parallel funcs, (err, data) =>
+          @_isLoading = false
+          if err
+            cbf err
+          else
+            data = _.flatten data, true
+            cbf null, data
+      getData (err, data) =>
+        return alert err if err
+        options =
+          title : 
+            text : name || '未定义'
+          interval : interval
+        
+        func = getData if window.parseInt(interval) == -1
+        chart[type] @$el, data, options, func
 
   }
 
