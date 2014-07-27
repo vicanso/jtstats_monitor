@@ -22,11 +22,11 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget'], ($, _, Backbone, widge
         el : @$el.find '.intervalSelector .selector'
         selectTips : '请选择时间间隔'
         placeholder : '请输入时间间隔(秒)'
-        items : ['1M', '10M', '30M', '1H', '2H', '6H', '12H', '1D']
+        items : ['1分钟', '10分钟', '30分钟', '1小时', '2小时', '6小时', '12小时', '1天']
       }
       @listenTo @categorySelector, 'change', @selectCategory
     selectCategory : ->
-      category = @categorySelector.val()[0]
+      category = @categorySelector.val()
       @_xhr.abort() if @_xhr
       @_xhr = $.getJSON "/collection/#{category}/keys", (data) =>
         @_xhr = null
@@ -42,10 +42,45 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget'], ($, _, Backbone, widge
       if obj.val() == 'realTime'
         disabled = true
       @$el.find('.dateSelector input').prop 'disabled', disabled
+    error : (msg) ->
+      warning = @$el.find '.header .warning'
+      if msg
+        warning.removeClass('hidden').text msg
+      else
+        warning.addClass 'hidden'
+    convertInterval : (interval) ->
+      convertInfos =
+        '1分钟' : 60
+        '10分钟' : 600
+        '30分钟' : 1800
+        '1小时' : 3600
+        '2小时' : 7200
+        '6小时' : 21600
+        '12小时' : 43200
+        '1天' : 86400
+      convertInfos[interval] || 60
     getConfig : ->
       type = @$el.find('.statsType .uiBtnSuccess').data 'type'
-      categoryList = @categorySelector.val()
-      console.dir categoryList
+      category = @categorySelector.val()
+      if !category
+        @error '请先选择统计类别'
+        return
+      interval = @intervalSelector.val()
+      if !interval
+        @error '时间间隔不能为空'
+        return
+      interval = @convertInterval interval
+
+      keys = @keySelector.val()
+      if !keys.length
+        @error '类别不能为空'
+        return
+      dateList = @$el.find '.dateSelector input'
+      start = dateList.eq(0).val()
+      end = dateList.eq(1).val()
+      if !start || !end
+        @error '开始与结束日期不能为空'
+        return
 
       # {"stats":[{"category":"sys-mac","key":[{"value":"cpu.0"}]}],"point":{"interval":"60"},"type":"line","date":{"start":"currentMonth","end":"0"},"name":"CPU"}
     preview : ->

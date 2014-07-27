@@ -117,11 +117,14 @@ define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module
     ###
     val : ->
       if @model.get 'edit'
-        [@$el.find('.content .userInput input').val().trim()]
+        values = [@$el.find('.content .userInput input').val().trim()]
       else
-        arr = _.map @$el.find('.content .items .item'), (item) ->
+        values = _.map @$el.find('.content .items .item'), (item) ->
           $(item).text()
-        arr
+      if @model.get 'multi'
+        values
+      else
+        values[0]
   }
 
   return
