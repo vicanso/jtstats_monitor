@@ -4,6 +4,7 @@ async = require 'async'
 moment = require 'moment'
 _ = require 'underscore'
 logger = require('../helpers/logger') __filename
+debug = require('debug') 'controllers'
 
 
 module.exports.getKeys = (req, res, cbf) ->
@@ -24,6 +25,7 @@ module.exports.getKeys = (req, res, cbf) ->
   async.waterfall [
     (cbf) ->
       mongodb.model(collection).mapReduce mapOptions, (err, result) ->
+        debug result
         cbf err, result
     (result, cbf) ->
       keys = _.sortBy result?[0]?.value.keys, (key) ->

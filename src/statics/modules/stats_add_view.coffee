@@ -253,7 +253,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
           start : dateList.eq(0).val().trim()
           end : dateList.eq(1).val().trim()
         name : @$el.find('.function input').val().trim()
-
+      console.dir JSON.stringify data
       data
       # @trigger 'preview', data
     render : ->

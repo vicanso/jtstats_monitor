@@ -5,26 +5,74 @@
   margin-left $MENU_WIDTH
   .pageContainer
     margin 0 20px
+    .grid
+      margin 20px 0
     .header
-      border-bottom 1px solid #eee
-    .statsType
+      border-bottom 1px solid $BORDER_COLOR
+    .statsItem
       line-height 30px
+      .name
+        float left
+        font-size 16px
+    $statsCategoryWidth = 230px
+    .statsCategory
+      .edit
+        display none
+    .statsType
       .uiBtnGroup
         display block
         margin-left 90px
         overflow hidden
-      .name
-        float left
-        font-size 16px
-      .btn
-        width 25%
-        margin-left -1px
+      .uiBtn
         padding 0
         text-align center
         &.selected
-          background-color #5cb85c
+          background-color #449d44
           color #eee
-    .categorySelector
-      margin 20px 0
+    .categorySelector, .intervalSelector
+      .selector
+        margin-left 60px
+    .intervalSelector
+      .selector
+        margin-left 80px
+    .timeSelector
+      line-height 30px
+      .grid
+        margin 0
+      .timing
+        border 1px solid $BORDER_COLOR
+        border-radius 3px
+      .addon
+        background-color #eee
+        border-right 1px solid $BORDER_COLOR
+        padding 7px 10px
+      .text
+        padding-left 5px
+    .inputGroup
+      border 1px solid $BORDER_COLOR
+      border-radius 3px
+      height 30px
+      line-height @height
+      overflow hidden
+      span
+        padding 0 10px
+        float left
+        display block
+        background-color #eee
+        border-right 1px solid $BORDER_COLOR
+      .inputItem
+        margin-left 80px
+        input
+          width 100%
+          text-indent 5px
+          outline none
+          border none
+          padding 4px 0
+          line-height 20px
+    .functions
+      .uiBtn
+        border-radius 3px
+        display block
+        text-align center
       
   

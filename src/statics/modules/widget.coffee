@@ -4,15 +4,16 @@ define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module
   Backbone = require 'Backbone'
 
 
-  exports.Selector = Backbone.Model.extend {
+  SelectorModel = Backbone.Model.extend {
     defaults :
       edit : false
       placeholder : ''
       selectTips : ''
+      multi : false
 
   }
 
-  exports.SelectorView = Backbone.View.extend {
+  exports.Selector = Backbone.View.extend {
     template : _.template '<div class="content">' +
       '<span class="glyphicon glyphicon-plus"></span>' +
       '<a class="edit" href="javascript:;"><span class="glyphicon glyphicon-edit"></span></a>' +
@@ -32,8 +33,9 @@ define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module
       'click .selectList li' : 'toggle'
       'click .content .edit' : 'toggleEdit'
     initialize : (options) ->
-      # @model = new SelectorModel _.pick options, ['items', 'placeholder', 'edit', 'selectTips']
+      @model = new SelectorModel _.omit options, 'el'
       @listenTo @model, 'change:edit', @editModeChange
+      @listenTo @model, 'change:items', @render
       @render()
       @
     ###*
@@ -57,19 +59,34 @@ define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module
         $el.addClass 'editMode'
       else
         $el.removeClass 'editMode'
+    options : (data) ->
+      if data
+        @model.set 'items', data
+      else
+        @model.get 'items'
+    getSelectListHtml : ->
+      liTemplate = _.template '<li><span class="checkIcon"></span><span class="dot" style="background-color:<%= color %>;"></span><%= name %></li>'
+      arr = _.map @model.get('items'), (item, i) =>
+        color = @colors[i % @colors.length]
+        liTemplate {name : item, color : color}
+      html = arr.join ''
     ###*
      * [toggle selector中的toggle]
      * @param  {[type]} e [description]
      * @return {[type]}   [description]
     ###
     toggle : (e) ->
-      obj = $ e.target
-      if obj.hasClass 'selected'
-        obj.removeClass 'selected'
-        obj.find('.checkIcon').removeClass 'glyphicon glyphicon-ok'
-      else
-        obj.addClass 'selected'
-        obj.find('.checkIcon').addClass 'glyphicon glyphicon-ok'
+      obj = $ e.currentTarget
+      if @model.get 'multi'
+        if obj.hasClass 'selected'
+          obj.removeClass 'selected'
+          obj.find('.checkIcon').removeClass 'glyphicon glyphicon-ok'
+        else
+          obj.addClass 'selected'
+          obj.find('.checkIcon').addClass 'glyphicon glyphicon-ok'
+      else if !obj.hasClass 'selected'
+        obj.addClass('selected').find('.checkIcon').addClass 'glyphicon glyphicon-ok'
+        obj.siblings('.selected').removeClass('selected').find('.checkIcon').removeClass 'glyphicon glyphicon-ok'
       $el = @$el
       selectedItems = @$el.find '.selectList .selected'
       arr = _.map selectedItems, (item) ->
@@ -81,26 +98,14 @@ define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module
       else
         placeholderObj.removeClass 'hidden'
       $el.find('.content .items').html arr.join ''
-      @changeValue()
-    changeValue : ->
-      if @model.get 'edit'
-        val = @$el.find('.content .userInput').val().trim()
-        @model.set 'values', [val]
-      else
-        values = _.map @$el.find('.content .selectInput .item'), (item) ->
-          $(item).text()
-        @model.set 'values', values
+      @trigger 'change'
     ###*
      * [render render模板]
      * @return {[type]} [description]
     ###
     render : ->
       $el = @$el
-      liTemplate = _.template '<li><span class="checkIcon"></span><span class="dot" style="background-color:<%= color %>;"></span><%= name %></li>'
-      arr = _.map @model.get('items'), (item, i) =>
-        color = @colors[i % @colors.length]
-        liTemplate {name : item, color : color}
-      html = arr.join ''
+      html = @getSelectListHtml()
       placeholder = @model.get 'placeholder'
       selectTips = @model.get 'selectTips'
       data = @model.toJSON()
@@ -112,11 +117,11 @@ define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module
     ###
     val : ->
       if @model.get 'edit'
-        @$el.find('.content .userInput').val().trim()
+        [@$el.find('.content .userInput input').val().trim()]
       else
-        arr = _.map @$el.find('.content .items'), (item) ->
+        arr = _.map @$el.find('.content .items .item'), (item) ->
           $(item).text()
-        arr.join ','
+        arr
   }
 
   return
