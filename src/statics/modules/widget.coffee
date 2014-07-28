@@ -1,7 +1,8 @@
-define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module) ->
+define 'widget', ['jquery', 'underscore', 'Backbone', 'debug'], (require, exports, module) ->
   _ = require 'underscore'
   $ = require 'jquery'
   Backbone = require 'Backbone'
+  debug = require('debug') 'module:widget'
 
 
   SelectorModel = Backbone.Model.extend {
@@ -33,7 +34,9 @@ define 'widget', ['jquery', 'underscore', 'Backbone'], (require, exports, module
       'click .selectList li' : 'toggle'
       'click .content .edit' : 'toggleEdit'
     initialize : (options) ->
-      @model = new SelectorModel _.omit options, 'el'
+      options = _.omit options, 'el'
+      debug 'initialize selector %j', options
+      @model = new SelectorModel options
       @listenTo @model, 'change:edit', @editModeChange
       @listenTo @model, 'change:items', @render
       @render()

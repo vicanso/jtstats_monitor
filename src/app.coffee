@@ -104,6 +104,9 @@ initServer = ->
   app.use (req, res, next) ->
     res.locals.DEBUG = true if req.param('__debug')?
     res.locals.JS_DEBUG = req.param('__jsdebug') || 0
+    pattern = req.param '__pattern'
+    pattern = '*' if config.env == 'development' && !pattern
+    res.locals.PATTERN = pattern
     next()
 
   require('./router').init app

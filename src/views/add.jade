@@ -4,25 +4,28 @@ block bodyContainer
   include ./menu
   #contentContainer
     include ./header
-    .pageContainer
+    .pageContainer.statsConfigs
       h1.header Add
         span.warning.hidden
       .grid.clearfix
-        .statsType.statsItem.col-4-5
+        .statsType.statsItem.col-2-3
           span.name 图表类型：
           .uiBtnGroup
             - var chartWidth = 100 / viewData.chartTypes.length;
             each chart, i in viewData.chartTypes
               a.uiBtn(href='javascript:;', class='#{i == 0? "uiBtnSuccess" : ""}', data-type='#{chart.type}', style='width:#{chartWidth}%') #{chart.name}
-        .statsCategory.statsItem.col-1-5
-          .selector
-      .grid.clearfix
-        .intervalSelector.statsItem.col-1-2
+
+        .intervalSelector.statsItem.col-1-3
           span.name 时间间隔：
           .selector
-        .categorySelector.statsItem.col-1-2
-          span.name 类别：
-          .selector
+      .grid.clearfix
+        span(style='float:left') 统计参数：
+        a.addConfig(href='javascript:;'): .glyphicon.glyphicon-plus
+        .statsConfig.clearfix
+          .statsCategory.statsItem.col-1-2
+            .selector
+          .categorySelector.statsItem.col-1-2
+            .selector
       .grid.clearfix
         .col-10-12.dateSelector
           .col-1-2: .inputGroup.start
@@ -44,6 +47,4 @@ block bodyContainer
           .inputItem: input(type='text', placeholder='请输入该统计的名称')
         .col-1-3: a.uiBtn.uiBtnDanger.preview(href='javascript:;') 预览
         .col-1-3: a.uiBtn.uiBtnSuccess.save(href='javascript:;') 保存
-
-
   - fileImporter.import(['/stylesheets/add.css', '/javascripts/add.js']);

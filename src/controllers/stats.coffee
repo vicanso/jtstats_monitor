@@ -12,7 +12,7 @@ module.exports = (req, res, cbf) ->
     'Cache-Control' : "public, max-age=#{maxAge}"
 
   query = req.query
-  keys = query.key
+  keys = query.keys
   keys = [keys] if !_.isArray keys
   funcs = _.map keys, (key) ->
     (cbf) ->

@@ -1,4 +1,6 @@
-seajs.use ['jquery', 'underscore', 'Backbone', 'widget'], ($, _, Backbone, widget) ->
+seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug'], ($, _, Backbone, widget, debug) ->
+  debug = debug 'view:add'
+  debug 'start run addView'
   AddView = Backbone.View.extend {
     events :
       'click .statsType .uiBtn' : 'selectType'
@@ -7,30 +9,41 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget'], ($, _, Backbone, widge
       'change .timeSelector .timing input' : 'changeTimeType'
 
     initialize : ->
-      @categorySelector = new widget.Selector {
-        el : @$el.find '.statsCategory .selector'
+      $el = @$el
+      categorySelector = new widget.Selector {
+        el : $el.find '.statsCategory .selector'
         selectTips : '请选择统计类别'
         items : JT_GLOBAL.collections
       }
-      @keySelector = new widget.Selector {
-        el : @$el.find '.categorySelector .selector'
+      categorySelector.on 'change', ->
+        @$el.removeClass 'notFilled'
+      @categorySelectorList = [categorySelector]
+      keySelector = new widget.Selector {
+        el : $el.find '.categorySelector .selector'
         selectTips : '请选择分类'
         placeholder : '请输入分类'
         multi : true
       }
+      keySelector.on 'change', ->
+        @$el.removeClass 'notFilled'
+      @keySelectorList = [keySelector]
       @intervalSelector = new widget.Selector {
-        el : @$el.find '.intervalSelector .selector'
+        el : $el.find '.intervalSelector .selector'
         selectTips : '请选择时间间隔'
         placeholder : '请输入时间间隔(秒)'
         items : ['1分钟', '10分钟', '30分钟', '1小时', '2小时', '6小时', '12小时', '1天']
       }
-      @listenTo @categorySelector, 'change', @selectCategory
-    selectCategory : ->
-      category = @categorySelector.val()
+      @intervalSelector.on 'change', ->
+        @$el.removeClass 'notFilled'
+      categorySelector.on 'change', =>
+        @selectCategory categorySelector, keySelector
+      # @listenTo categorySelector, 'change', @selectCategory
+    selectCategory : (categorySelector, keySelector) ->
+      category = categorySelector.val()
       @_xhr.abort() if @_xhr
       @_xhr = $.getJSON "/collection/#{category}/keys", (data) =>
         @_xhr = null
-        @keySelector.options data
+        keySelector.options data
 
     selectType : (e) ->
       obj = $ e.currentTarget
@@ -59,36 +72,83 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget'], ($, _, Backbone, widge
         '12小时' : 43200
         '1天' : 86400
       convertInfos[interval] || 60
-    getConfig : ->
-      type = @$el.find('.statsType .uiBtnSuccess').data 'type'
-      category = @categorySelector.val()
-      if !category
-        @error '请先选择统计类别'
-        return
+    getOptions : ->
+      $el = @$el
+      type = $el.find('.statsType .uiBtnSuccess').data 'type'
       interval = @intervalSelector.val()
       if !interval
-        @error '时间间隔不能为空'
+        $el.find('.intervalSelector .selector').addClass 'notFilled'
         return
       interval = @convertInterval interval
 
+
+      convertKeys = (keys) ->
+        _.map keys, (key) ->
+          if key.charAt(0) == '/'
+            if key.charAt(key.length - 1) == '/'
+              key = key.substring 1, key.length - 1
+            else
+              key = key.substring 1
+            {
+              value : key
+              type : 'reg'
+            }
+          else
+            {
+              value : key
+            }
+
+      category = @categorySelector.val()
+      if !category
+        $el.find('.statsCategory .selector').addClass 'notFilled'
+        return
+
       keys = @keySelector.val()
       if !keys.length
-        @error '类别不能为空'
+        $el.find('.categorySelector .selector').addClass 'notFilled'
         return
-      dateList = @$el.find '.dateSelector input'
+      dateList = $el.find '.dateSelector input'
       start = dateList.eq(0).val()
-      end = dateList.eq(1).val()
-      if !start || !end
-        @error '开始与结束日期不能为空'
+      if !start
+        dateList.eq(0).closest('.start').addClass 'notFilled'
         return
+      end = dateList.eq(1).val()
+      if !end
+        dateList.eq(1).closest('.end').addClass 'notFilled'
+        return
+
+      config =
+        stats : [
+          {
+            category : category
+            keys : convertKeys keys
+          }
+        ]
+        point : 
+          interval : interval
+        type : type
+        date : 
+          start : start
+          end : end
 
       # {"stats":[{"category":"sys-mac","key":[{"value":"cpu.0"}]}],"point":{"interval":"60"},"type":"line","date":{"start":"currentMonth","end":"0"},"name":"CPU"}
     preview : ->
-      @getConfig()
+      options = @getOptions()
+      return if !options
+      @chartView.remove() if @chartView
+      obj = $ '<div class="chartView" />'
+      obj.appendTo @$el
+      seajs.use 'ChartView', (ChartView) =>
+        chartView = new ChartView {
+          el : obj
+        }
+        chartView.setOptions options
+        chartView.show()
+        @chartView = chartView
 
   }
 
   addView = new AddView {
-    el : $ '.pageContainer'
+    el : $ '.statsConfigs'
   }
 

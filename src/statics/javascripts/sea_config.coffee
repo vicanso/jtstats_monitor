@@ -2,6 +2,7 @@ seajs.config {
   base : CONFIG.staticUrlPrefix
   alias : 
     'jtLazyLoad' : 'components/jtlazy_load/dest/jtlazy_load.js'
+    # 'debug' : 'components/debug/dist/debug.js'
     'stats' : 'modules/stats.js'
     'chart' : 'modules/chart.js'
     'StatsAddView' : 'modules/stats_add_view.js'
@@ -29,6 +30,14 @@ define 'async', ->
 
 define 'echarts', ->
   window.echarts
+
+define 'debug', ->
+  debug = window.debug
+  if CONFIG.pattern
+    debug.enable CONFIG.pattern
+  else
+    debug.disable()
+  debug
 
 
 if CONFIG.jsDebug > 0

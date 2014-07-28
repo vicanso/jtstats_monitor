@@ -12,7 +12,8 @@
     ],
     [
       "/components/moment/moment.js",
-      "/components/async/lib/async.js"
+      "/components/async/lib/async.js",
+      "/components/debug/dist/debug.js"
     ],
     [
       "/components/seajs/sea.js",

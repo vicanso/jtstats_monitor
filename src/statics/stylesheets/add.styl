@@ -3,10 +3,13 @@
 
 #contentContainer
   margin-left $MENU_WIDTH
-  .pageContainer
+  .statsConfigs
     margin 0 20px
+    line-height 30px
     .grid
       margin 20px 0
+    .notFilled
+      border 1px solid #d43f3a
     .header
       border-bottom 1px solid $BORDER_COLOR
       .warning
@@ -34,14 +37,22 @@
         &.selected
           background-color #449d44
           color #eee
-    .categorySelector, .intervalSelector
-      .selector
-        margin-left 60px
     .intervalSelector
       .selector
         margin-left 80px
+    .statsConfig
+      margin-left 80px
+      margin-right 50px
+    .addConfig
+      float right
+      background-color #eee
+      border 1px solid $BORDER_COLOR
+      padding 0 8px
+      border-radius 3px
+      color #6a6b70
+      &:hover
+        color #333
     .timeSelector
-      line-height 30px
       .grid
         margin 0
       .timing
@@ -59,6 +70,8 @@
       height 30px
       line-height @height
       overflow hidden
+      &.notFilled
+        border 1px solid #d43f3a
       span
         padding 0 10px
         float left
@@ -76,8 +89,11 @@
           line-height 20px
     .functions
       .uiBtn
+        padding 0
         border-radius 3px
         display block
         text-align center
+    .chartView
+      height 300px
       
   
