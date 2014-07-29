@@ -4,19 +4,14 @@
 #contentContainer
   margin-left $MENU_WIDTH
   .statsConfigs
-    margin 0 20px
-    line-height 30px
-    .grid
+    line-height 28px
+    .row
       margin 20px 0
     .notFilled
       border 1px solid #d43f3a
     .header
+      margin 15px
       border-bottom 1px solid $BORDER_COLOR
-      .warning
-        margin-left 10px
-        font-size 16px
-        font-weight normal
-        padding 2px 10px
     .statsItem
       line-height 30px
       .name
@@ -27,23 +22,18 @@
       .edit
         display none
     .statsType
-      .uiBtnGroup
+      .btn-group
         display block
         margin-left 90px
-        overflow hidden
-      .uiBtn
-        padding 0
-        text-align center
-        &.selected
-          background-color #449d44
-          color #eee
     .intervalSelector
       .selector
         margin-left 80px
+    .dateSelector, .timeSelector
+      padding 0
     .statsConfig
-      margin-left 80px
+      margin-left 75px
       margin-right 50px
-    .addConfig
+    .addConfig, .removeConfig
       float right
       background-color #eee
       border 1px solid $BORDER_COLOR
@@ -52,47 +42,11 @@
       color #6a6b70
       &:hover
         color #333
-    .timeSelector
-      .grid
-        margin 0
-      .timing
-        border 1px solid $BORDER_COLOR
-        border-radius 3px
-      .addon
-        background-color #eee
-        border-right 1px solid $BORDER_COLOR
-        padding 7px 10px
-      .text
-        padding-left 5px
-    .inputGroup
-      border 1px solid $BORDER_COLOR
-      border-radius 3px
-      height 30px
-      line-height @height
-      overflow hidden
-      &.notFilled
-        border 1px solid #d43f3a
-      span
-        padding 0 10px
-        float left
-        display block
-        background-color #eee
-        border-right 1px solid $BORDER_COLOR
-      .inputItem
-        margin-left 80px
-        input
-          width 100%
-          text-indent 5px
-          outline none
-          border none
-          padding 4px 0
-          line-height 20px
     .functions
-      .uiBtn
-        padding 0
-        border-radius 3px
+      .btn
         display block
-        text-align center
+    .desc
+      margin 0 15px
     .chartView
       height 300px
       

@@ -77,9 +77,9 @@
     line-height 20px
     box-shadow 0px 2px 8px #888
     background-color #fff
-    z-index 1
+    z-index 9
     $arrowLeft = 7px
-    $arrowTop = -19px
+    $arrowTop = -16px
     .arrowTop1
       position absolute
       left $arrowLeft
@@ -102,40 +102,3 @@
       list-style none
       padding 2px 0
       cursor pointer
-.uiBtn
-  display inline-block
-  color #333
-  background-color #fff
-  border 1px solid $BORDER_COLOR
-  text-decoration none
-  padding 5px 10px
-  text-align center
-  &.uiBtnDanger
-    color #fff
-    background-color #d9534f
-    border-color #d43f3a
-    &:hover, &:active
-      color #fff
-      background-color #c9302c
-      border-color #ac2925
-  &.uiBtnSuccess
-    color #fff
-    background-color #5cb85c
-    border-color #4cae4c
-    &:hover, &:active
-      color #fff
-      background-color #449d44
-      border-color #398439
-  &:hover, &:active
-    background-color #eee
-.uiBtnGroup
-  border-radius 3px
-  display inline-block
-  border 1px solid $BORDER_COLOR
-  .uiBtn
-    border none
-    border-left 1px solid $BORDER_COLOR
-    margin-right -1px
-    &:first-child
-      border-left none
-      margin-right 0

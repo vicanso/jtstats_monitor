@@ -6,45 +6,49 @@ block bodyContainer
     include ./header
     .pageContainer.statsConfigs
       h1.header Add
-        span.warning.hidden
-      .grid.clearfix
-        .statsType.statsItem.col-2-3
+      .row
+        .statsType.statsItem.col-xs-8
           span.name 图表类型：
-          .uiBtnGroup
+          .btn-group
             - var chartWidth = 100 / viewData.chartTypes.length;
             each chart, i in viewData.chartTypes
-              a.uiBtn(href='javascript:;', class='#{i == 0? "uiBtnSuccess" : ""}', data-type='#{chart.type}', style='width:#{chartWidth}%') #{chart.name}
+              a.btn.btn-default(href='javascript:;', class='#{i == 0? "btn-success" : ""}', data-type='#{chart.type}', style='width:#{chartWidth}%') #{chart.name}
 
-        .intervalSelector.statsItem.col-1-3
+        .intervalSelector.statsItem.col-xs-4 
           span.name 时间间隔：
           .selector
-      .grid.clearfix
+      .row
+        .dateSelector.col-xs-9
+          .col-xs-6: .input-group.start
+            span.input-group-addon 开始日期
+            input.form-control(type='date')
+          .col-xs-6: .input-group.end
+            span.input-group-addon 结束日期
+            input.form-control(type='date')
+        .timeSelector.col-xs-3
+          .col-xs-6: .timing.input-group
+            span.input-group-addon: input(type='radio', name='timing', value='realTime', checked)
+            span.form-control 实时
+          .col-xs-6: .timing.input-group
+            span.input-group-addon: input(type='radio', name='timing', value='noRealTime')
+            span.form-control 非实时
+      .row(style='padding:0 15px')
         span(style='float:left') 统计参数：
-        a.addConfig(href='javascript:;'): .glyphicon.glyphicon-plus
-        .statsConfig.clearfix
-          .statsCategory.statsItem.col-1-2
+        a.addConfig(href='javascript:;'): span.glyphicon.glyphicon-plus
+        
+        .statsConfig
+          .statsCategory.statsItem.col-xs-6
             .selector
-          .categorySelector.statsItem.col-1-2
+          .categorySelector.statsItem.col-xs-6
             .selector
-      .grid.clearfix
-        .col-10-12.dateSelector
-          .col-1-2: .inputGroup.start
-            span 开始日期
-            .inputItem: input(type='date')
-          .col-1-2: .inputGroup.end
-            span 结束日期
-            .inputItem: input(type='date')
-        .col-2-12.timeSelector: .grid
-          .col-1-2: .timing
-            span.addon: input(type='radio', name='timing', value='realTime')
-            span.text 实时
-          .col-1-2: .timing
-            span.addon: input(type='radio', name='timing', checked, value='noRealTime')
-            span.text 非实时
-      .grid.clearfix.functions
-        .col-1-3: .statsName.inputGroup
-          span 统计名称
-          .inputItem: input(type='text', placeholder='请输入该统计的名称')
-        .col-1-3: a.uiBtn.uiBtnDanger.preview(href='javascript:;') 预览
-        .col-1-3: a.uiBtn.uiBtnSuccess.save(href='javascript:;') 保存
+      .row.functions
+        .col-xs-4: .statsName.input-group
+          span.input-group-addon 统计名称
+          input.form-control(type='text', placeholder='请输入该统计的名称')
+        .col-xs-4: a.btn.btn-danger.preview(href='javascript:;') 预览
+        .col-xs-4: a.btn.btn-success.save(href='javascript:;') 保存
+      .row
+        .input-group.desc
+          span.input-group-addon 统计描述
+          input.form-control(type='text')
   - fileImporter.import(['/stylesheets/add.css', '/javascripts/add.js']);
