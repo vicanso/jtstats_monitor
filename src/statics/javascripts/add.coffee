@@ -1,4 +1,4 @@
-seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug'], ($, _, Backbone, widget, debug) ->
+seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _, Backbone, widget, debug, user) ->
   debug = debug 'view:add'
   debug 'start run addView'
   AddView = Backbone.View.extend {
@@ -25,7 +25,11 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug'], ($, _, Backbo
       
       @statsConfigs = []
       @createStatsConfig $el.find '.statsConfig'
-
+      $el.find('.datePickerContainer .date').datepicker {
+        autoclose : true
+        format : 'yyyy-mm-dd'
+        todayBtn : 'linked'
+      }
       $el.find('input').focus ->
         $(@).removeClass 'notFilled'
 
@@ -198,12 +202,56 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug'], ($, _, Backbo
       name = statsNameInput.val().trim()
       if !name
         statsNameInput.addClass 'notFilled'
-
+        return
+      options.name = name
       desc = $el.find('.desc input').val().trim()
+      options.desc = desc
+      result = $el.find '.result'
+      $.ajax({
+        url : '/config'
+        type : 'post'
+        dataType : 'json'
+        contentType : 'application/json'
+        data : JSON.stringify options
+      }).success((res)->
+        result.removeClass('hidden alert-danger').addClass('alert-success').html '已成功保证该统计配置！'
+      ).error (res) ->
+        result.removeClass('hidden alert-success').addClass('alert-danger').html '保存统计配置失败！'
 
   }
 
   addView = new AddView {
     el : $ '.statsConfigs'
   }
+
+  seajs.emit 'loadComplete' if CONFIG.env == 'development'
+
+  # $.ajax({
+  #   url : '/config'
+  #   type : 'post'
+  #   dataType : 'json'
+  #   contentType : 'application/json'
+  #   data : JSON.stringify {
+  #     name : 'CPU监控'
+  #     desc : 'CPU的监控数据（时间间隔为1分钟）'
+  #     stats : [
+  #       {
+  #         category : 'haproxy'
+  #         keys : [
+  #           {
+  #             value : 'reqTotal'
+  #           }
+  #         ]
+  #       }
+  #     ]
+  #     point :
+  #       interval : 60
+  #     type : 'line'
+  #     date :
+  #       start : '2014-07-16'
+  #       end : '2014-07-18'
+  #   }
+  # }).success((res)->
+  # ).error (res) ->
+
 

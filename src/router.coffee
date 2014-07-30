@@ -67,7 +67,7 @@ routeInfos = [
   }
   {
     route : '/config'
-    type : 'post'
+    type : ['get', 'post']
     handler : controllers.config
   }
   {

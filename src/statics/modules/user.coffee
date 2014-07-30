@@ -1,7 +1,18 @@
-define 'user', ['jquery', 'underscore'], (require, exports, module) ->
+define 'user', ['jquery', 'underscore', 'async'], (require, exports, module) ->
   $ = require 'jquery'
   _ = require 'underscore'
+  async = require 'async'
+  noop = ->
 
+  get = async.memoize (cbf) ->
+    $.ajax({
+      url : '/user?cache=false'
+      dataType : 'json'  
+    }).success((res)->
+      cbf null, res
+    ).error (res) ->
+      cbf res
+  get noop
 
   exports.isLogined = (cbf) ->
 

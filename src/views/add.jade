@@ -1,5 +1,7 @@
 extends ./layout
 
+
+
 block bodyContainer
   include ./menu
   #contentContainer
@@ -19,12 +21,16 @@ block bodyContainer
           .selector
       .row
         .dateSelector.col-xs-9
-          .col-xs-6: .input-group.start
-            span.input-group-addon 开始日期
-            input.form-control(type='date')
-          .col-xs-6: .input-group.end
-            span.input-group-addon 结束日期
-            input.form-control(type='date')
+          span(style='float:left;margin-left:15px') 统计日期：
+          .datePickerContainer
+            .col-xs-6: .input-group.start.date
+              input.form-control(type='text')
+              span.input-group-addon
+                i.glyphicon.glyphicon-th
+            .col-xs-6: .input-group.end.date
+              input.form-control(type='text')
+              span.input-group-addon
+                i.glyphicon.glyphicon-th
         .timeSelector.col-xs-3
           .col-xs-6: .timing.input-group
             span.input-group-addon: input(type='radio', name='timing', value='realTime', checked)
@@ -51,4 +57,6 @@ block bodyContainer
         .input-group.desc
           span.input-group-addon 统计描述
           input.form-control(type='text')
+      .result.hidden.alert
+  - fileImporter.import(['/components/bootstrap-datepicker/js/bootstrap-datepicker.js', '/components/bootstrap-datepicker/css/datepicker3.css']);
   - fileImporter.import(['/stylesheets/add.css', '/javascripts/add.js']);

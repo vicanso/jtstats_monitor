@@ -12,16 +12,11 @@ module.exports =
     stats : [
       {
         category : String
-        key : []
+        keys : []
       }
     ]
   indexes : [
     {
-      id : 1
       name : 1
-    }
-    {
-      id : 1
-      address : 1
     }
   ]
