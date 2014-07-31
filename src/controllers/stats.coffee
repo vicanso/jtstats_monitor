@@ -42,7 +42,6 @@ getStatsData = (query, key, cbf) ->
 
   getDate = (date) ->
     formatDate = ''
-    console.dir date
     if date
       if date == 'currentMonth'
         formatDate = now.clone().date(1).format 'YYYY-MM-DD'

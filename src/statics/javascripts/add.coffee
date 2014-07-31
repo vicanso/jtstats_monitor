@@ -23,6 +23,24 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       @intervalSelector.on 'change', ->
         @$el.removeClass 'notFilled'
       
+      @commonDateSelector = new widget.Selector {
+        el : $el.find '.commonDateSelector'
+        selectTips : '常用日期间隔'
+        items : ['当天', '7天', '15天', '30天', '当月']
+      }
+      @commonDateSelector.on 'change', =>
+        dataInfos =
+          '当天' : [0, 0]
+          '7天' : [-6, 0]
+          '15天' : [-14, 0]
+          '30天' : [-29, 0]
+          '当月' : ['currentMonth', 0]
+        dates = dataInfos[@commonDateSelector.val()]
+        return if !dates
+        dateObjs = $el.find '.datePickerContainer .date input'
+        _.each dates, (date, i) ->
+          dateObjs.eq(i).val date
+
       @statsConfigs = []
       @createStatsConfig $el.find '.statsConfig'
       $el.find('.datePickerContainer .date').datepicker {

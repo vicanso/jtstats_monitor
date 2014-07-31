@@ -23,14 +23,15 @@ block bodyContainer
         .dateSelector.col-xs-9
           span(style='float:left;margin-left:15px') 统计日期：
           .datePickerContainer
-            .col-xs-6: .input-group.start.date
+            .col-xs-4: .input-group.start.date
               input.form-control(type='text')
               span.input-group-addon
                 i.glyphicon.glyphicon-th
-            .col-xs-6: .input-group.end.date
+            .col-xs-4: .input-group.end.date
               input.form-control(type='text')
               span.input-group-addon
                 i.glyphicon.glyphicon-th
+            .col-xs-4: .commonDateSelector
         .timeSelector.col-xs-3
           .col-xs-6: .timing.input-group
             span.input-group-addon: input(type='radio', name='timing', value='realTime', checked)
