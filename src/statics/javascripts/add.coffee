@@ -10,6 +10,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       'click .addConfig' : 'addConfig'
       'click .removeConfig' : 'removeConfig'
       'change .timeSelector .timing input' : 'changeTimeType'
+      'click .reset' : 'reset'
 
     initialize : ->
       debug 'initialize'
@@ -187,8 +188,11 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
           keys : convertKeys keys
         }
       return if stats.length != @statsConfigs.length
-
+      statsNameInput = $el.find '.statsName input'
+      name = statsNameInput.val().trim()
+      desc = $el.find('.desc input').val().trim()
       config =
+        name : name
         stats : stats
         point : 
           interval : interval
@@ -196,6 +200,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
         date : 
           start : start
           end : end
+        desc : desc
       debug 'config %j', config
       config
 
@@ -204,6 +209,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       return if !options
       @chartView.remove() if @chartView
       obj = $ '<div class="chartView" />'
+      obj.attr 'title', options.desc
       obj.appendTo @$el
       seajs.use 'ChartView', (ChartView) =>
         chartView = new ChartView {
@@ -217,13 +223,9 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       return if !options
       $el = @$el
       statsNameInput = $el.find '.statsName input'
-      name = statsNameInput.val().trim()
-      if !name
+      if !options.name
         statsNameInput.addClass 'notFilled'
         return
-      options.name = name
-      desc = $el.find('.desc input').val().trim()
-      options.desc = desc
       result = $el.find '.result'
       $.ajax({
         url : '/config'
@@ -235,6 +237,19 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
         result.removeClass('hidden alert-danger').addClass('alert-success').html '已成功保证该统计配置！'
       ).error (res) ->
         result.removeClass('hidden alert-success').addClass('alert-danger').html '保存统计配置失败！'
+    reset : ->
+      $el = @$el
+      @intervalSelector.reset()
+      @commonDateSelector.reset()
+      $el.find('.datePickerContainer .date input').val ''
+      _.each @statsConfigs, (statsConfig) ->
+        _.each statsConfig, (model) ->
+          model.reset()
+      $el.find('.statsName input').val ''
+      $el.find('.desc input').val ''
+      $el.find('.result').addClass 'hidden'
+      @chartView.remove() if @chartView
+
 
   }
 
@@ -244,32 +259,5 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
 
   seajs.emit 'loadComplete' if CONFIG.env == 'development'
 
-  # $.ajax({
-  #   url : '/config'
-  #   type : 'post'
-  #   dataType : 'json'
-  #   contentType : 'application/json'
-  #   data : JSON.stringify {
-  #     name : 'CPU监控'
-  #     desc : 'CPU的监控数据（时间间隔为1分钟）'
-  #     stats : [
-  #       {
-  #         category : 'haproxy'
-  #         keys : [
-  #           {
-  #             value : 'reqTotal'
-  #           }
-  #         ]
-  #       }
-  #     ]
-  #     point :
-  #       interval : 60
-  #     type : 'line'
-  #     date :
-  #       start : '2014-07-16'
-  #       end : '2014-07-18'
-  #   }
-  # }).success((res)->
-  # ).error (res) ->
 
 

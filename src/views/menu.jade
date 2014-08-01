@@ -2,13 +2,13 @@
 - var page = viewData.page || 'dashboard';
 ul.menuContainer
   li.logo JTStats
-  li: a(href='javascript:;', class='#{page == "dashboard"? "active" : ""}') 
+  li: a(href='/dashboard', class='#{page == "dashboard"? "active" : ""}') 
     span.glyphicon.glyphicon-stats 
     | Dashboard
   li: a(href='/add', class='#{page == "add"? "active" : ""}')
     span.glyphicon.glyphicon-plus 
     | Add
-  li: a(href='javascript:;')
+  li: a(href='/configs', class='#{page == "configs"? "active" : ""}')
     span.glyphicon.glyphicon-list
     | Configs
   li.logIn: a(href='javascript:;')

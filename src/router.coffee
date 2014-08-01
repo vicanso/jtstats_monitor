@@ -44,6 +44,13 @@ routeInfos = [
     middleware : [addImporter]
     template : 'add'
   }
+  {
+    route : '/dashboard'
+    handler : controllers.dashboard
+    middleware : [addImporter, session]
+    template : 'dashboard'
+  }
+
 
   {
     route : '/'

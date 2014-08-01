@@ -49,11 +49,12 @@ block bodyContainer
           .categorySelector.statsItem.col-xs-6
             .selector
       .row.functions
-        .col-xs-4: .statsName.input-group
+        .col-xs-3: .statsName.input-group
           span.input-group-addon 统计名称
           input.form-control(type='text', placeholder='请输入该统计的名称')
-        .col-xs-4: a.btn.btn-danger.preview(href='javascript:;') 预览
-        .col-xs-4: a.btn.btn-success.save(href='javascript:;') 保存
+        .col-xs-3: a.btn.btn-primary.reset(href='javascript:;') 重置
+        .col-xs-3: a.btn.btn-danger.preview(href='javascript:;') 预览
+        .col-xs-3: a.btn.btn-success.save(href='javascript:;') 保存
       .row
         .input-group.desc
           span.input-group-addon 统计描述

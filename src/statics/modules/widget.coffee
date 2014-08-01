@@ -128,6 +128,8 @@ define 'widget', ['jquery', 'underscore', 'Backbone', 'debug'], (require, export
         values
       else
         values[0]
+    reset : ->
+      @render()
   }
 
   return

@@ -1,27 +1,43 @@
 extends ./layout
 
-block bodyContainer
-  #configsContainer
-    include ./header
-    .container-fluid: .row
-      include ./slider
-      .col-sm-9.col-sm-offset-3.col-md-10.col-md-offset-2.mainContainer
-        h1.page-header Configs
 
-        .panel.panel-default: table.table.table-bordered
+block bodyContainer
+  include ./menu
+  #contentContainer
+    include ./header
+    .pageContainer.statsConfigs
+      .panel.panel-default
+        .panel-heading Configs
+        .panel-body
+          p 可以通过各种配置的组合，生成自定义的统计分析
+        table.table
           thead: tr
             th name
+            th stats
             th type
             th date
             th interval
+            th op
           tbody
             each config in viewData.configs
               tr
                 td #{config.name}
+                td #{JSON.stringify(config.stats)}
                 td #{config.type}
                 td start:#{config.date.start}, end:#{config.date.end}
                 td #{config.point.interval}
+                td
+                  .btn-group
+                    a.btn.btn-default.preview 预览
+                    a.btn.btn-default.add 添加
 
+      .chartViewContainer.hidden
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title
+              a.glyphicon.glyphicon-remove.close(href='javascript:;')
+              | 预览
+          .panel-body loading...
 
   - fileImporter.import(['/javascripts/configs.js', '/stylesheets/configs.css']);
 

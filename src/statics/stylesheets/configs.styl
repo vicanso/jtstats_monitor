@@ -1,3 +1,29 @@
-#configsContainer
-  .mainContainer
-    padding 20px
+@import 'nib'
+@import './common'
+
+#contentContainer
+  margin-left $MENU_WIDTH
+  .pageContainer
+    margin 15px
+    .header
+      margin 15px 0
+      border-bottom 1px solid $BORDER_COLOR
+    .table
+      a
+        text-decoration none
+        color #808080
+    .chartViewContainer
+      position fixed
+      z-index 1
+      left 50%
+      top 50%
+      width 700px
+      height 400px
+      margin-left -(@width / 2)
+      margin-top -(@height / 2)
+      .close
+        float right
+        font-size 16px
+        font-weight normal
+      .chartView
+        height 350px
