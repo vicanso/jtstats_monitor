@@ -1,10 +1,21 @@
 @import 'nib'
-html, body
-  font-family "Helvetica Neue", Helvetica, Arial, sans-serif
-  font-size 14px
-  line-height 1.42857143
-  color #333
-  visibility hidden
 
-.hidden
-  display none
+.maskContainer
+  position fixed
+  left 0
+  top 0
+  right 0
+  bottom 0
+  z-index 8
+  background-color rgba(0, 0, 0, 0.6)
+
+
+.logInDialog
+  position fixed
+  left 50%
+  top 50%
+  width 600px
+  height 300px
+  z-index 9
+  margin-left -(@width / 2)
+  margin-top -(@height / 2)

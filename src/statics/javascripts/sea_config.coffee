@@ -2,7 +2,6 @@ seajs.config {
   base : CONFIG.staticUrlPrefix
   alias : 
     'jtLazyLoad' : 'components/jtlazy_load/dest/jtlazy_load.js'
-    # 'debug' : 'components/debug/dist/debug.js'
     'stats' : 'modules/stats.js'
     'chart' : 'modules/chart.js'
     'StatsAddView' : 'modules/stats_add_view.js'

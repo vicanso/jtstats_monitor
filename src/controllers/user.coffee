@@ -1,6 +1,7 @@
 mongodb = require '../helpers/mongodb'
 config = require '../config'
 async = require 'async'
+url = require 'url'
 moment = require 'moment'
 _ = require 'underscore'
 crypto = require 'crypto'
@@ -32,7 +33,18 @@ module.exports = (req, res, cbf) ->
     when 'POST' then createUser req, cbf
 
 getUserInfo = (req, cbf) ->
-  user = req.session?.user || {}
+  res.redirect 302, '/user?cache=false' if req.param('cache') != 'false'
+  urlInfo = url.parse req.header 'referer'
+
+  # PV lOG
+  # console.dir urlInfo.path
+
+
+  user = req.session?.user || {
+    anonymous : true
+    hash : getHashKey()
+  }
+  req.session.user = user
   cbf null, user
 
 

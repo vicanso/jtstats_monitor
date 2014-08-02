@@ -11,7 +11,7 @@ ul.menuContainer
   li: a(href='/configs', class='#{page == "configs"? "active" : ""}')
     span.glyphicon.glyphicon-list
     | Configs
-  li.logIn: a(href='javascript:;')
+  li.logIn.hidden: a(href='javascript:;')
     span.glyphicon.glyphicon-log-in
   li.hidden.logOut: a(href='javascript:;')
     span.glyphicon.glyphicon-off

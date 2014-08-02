@@ -12,11 +12,14 @@ html(lang='zh-CN')
     title #{title || 'JTStats'}
     include ./inlinejs
     //CSS_FILES_CONTAINER
-    - fileImporter.import(['/components/bootstrap/dist/css/bootstrap.css', '/stylesheets/widget.css']);
+    - fileImporter.import(['/components/bootstrap/dist/css/bootstrap.css', '/stylesheets/widget.css', '/stylesheets/global.css']);
     - fileImporter.import(['/components/jquery/dist/jquery.js',  '/components/underscore/underscore.js', '/components/backbone/backbone.js', '/components/echarts/echarts.js', '/components/moment/moment.js', '/components/async/lib/async.js', '/components/debug/dist/debug.js']);
     - fileImporter.import(['/components/seajs/sea.js', '/javascripts/sea_config.js']);
+
     if CONFIG.env == 'development'
       - fileImporter.import('/javascripts/sea_dev.js');
+    - fileImporter.import('/javascripts/global.js');
+    
   body
     block bodyContainer
   include ./global_variable

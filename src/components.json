@@ -60,19 +60,22 @@
       "/components/debug/dist/debug.js",
       "/components/seajs/sea.js",
       "/javascripts/sea_config.js",
-      "/modules/widget.js",
       "/modules/user.js",
+      "/modules/widget.js",
+      "/modules/menu.js",
+      "/javascripts/global.js",
       "/components/bootstrap-datepicker/js/bootstrap-datepicker.js",
       "/javascripts/add.js"
     ],
     "css": [
       "/components/bootstrap/dist/css/bootstrap.css",
       "/stylesheets/widget.css",
+      "/stylesheets/global.css",
       "/stylesheets/menu.css",
       "/stylesheets/header.css",
       "/components/bootstrap-datepicker/css/datepicker3.css",
       "/stylesheets/add.css"
     ],
-    "modifiedAt": "2014-07-30 21:36:30"
+    "modifiedAt": "2014-08-02 23:02:13"
   }
 }

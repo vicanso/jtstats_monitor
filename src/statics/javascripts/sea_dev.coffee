@@ -2,6 +2,7 @@ window.LOAD_FILES = []
 seajs.on 'fetch', (mod) ->
   LOAD_FILES.push mod.uri
 
+
 seajs.on 'loadComplete', ->
   setTimeout ->
     index = -1
@@ -20,6 +21,6 @@ seajs.on 'loadComplete', ->
       }
     }).success (res) ->
       alert res.msg if res.msg
-  , 1
+  , 200
 
 
