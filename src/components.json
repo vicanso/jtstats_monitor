@@ -62,7 +62,6 @@
       "/javascripts/sea_config.js",
       "/modules/user.js",
       "/modules/widget.js",
-      "/modules/menu.js",
       "/javascripts/global.js",
       "/components/bootstrap-datepicker/js/bootstrap-datepicker.js",
       "/javascripts/add.js"
@@ -76,6 +75,6 @@
       "/components/bootstrap-datepicker/css/datepicker3.css",
       "/stylesheets/add.css"
     ],
-    "modifiedAt": "2014-08-02 23:02:13"
+    "modifiedAt": "2014-08-04 22:27:31"
   }
 }

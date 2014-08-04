@@ -7,8 +7,8 @@ seajs.config {
     'StatsAddView' : 'modules/stats_add_view.js'
     'ChartView' : 'modules/chart_view.js'
     'user' : 'modules/user.js'
-    'menu' : 'modules/menu.js'
     'widget' : 'modules/widget.js'
+    'crypto' : 'modules/crypto.js'
 }
 
 

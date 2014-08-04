@@ -1,4 +1,4 @@
-seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user', 'menu'], ($, _, Backbone, widget, debug, user, menu) ->
+seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _, Backbone, widget, debug, user) ->
   debug = debug 'view:add'
   debug 'start run addView'
   AddView = Backbone.View.extend {

@@ -108,6 +108,9 @@ mergeDocs = (docs) ->
     doc = doc.toObject()
     key = doc.key
     result[key] = [] if !result[key]
+    startOfSeconds = Math.floor moment(doc.date, 'YYYY-MM-DD').valueOf() / 1000
+    _.each doc.values, (value) ->
+      value.t = value.t + startOfSeconds
     result[key].push doc
   _.map result, (values, key) ->
     firstItem = _.first values

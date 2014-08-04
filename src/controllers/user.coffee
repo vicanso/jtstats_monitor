@@ -28,9 +28,14 @@ getHashKey = ->
 module.exports = (req, res, cbf) ->
   method = req.method
   user = req.session
+  data = req.body
   switch method
     when 'GET' then getUserInfo req, cbf
-    when 'POST' then createUser req, cbf
+    when 'POST'
+      if data.type == 'register'
+        createUser req, cbf
+      else
+        modifyUser req, cbf
 
 getUserInfo = (req, cbf) ->
   res.redirect 302, '/user?cache=false' if req.param('cache') != 'false'
@@ -43,10 +48,34 @@ getUserInfo = (req, cbf) ->
   user = req.session?.user || {
     anonymous : true
     hash : getHashKey()
+
   }
   req.session.user = user
-  cbf null, user
+  cbf null, _.pick user, ['anonymous', 'name', 'hash']
 
+modifyUser = (req, cbf) ->
+  data = req.body
+  hash = req.session?.user?.hash
+  if !hash
+    cbf new Error 'the hash is null'
+  else
+    async.waterfall [
+      (cbf) ->
+        User.findOne {name : data.name}, cbf
+      (doc, cbf) ->
+        shasum = crypto.createHash 'sha1'
+        shasum.update "#{doc.pwd}_#{hash}"
+        if data.pwd == shasum.digest 'hex'
+          req.session.user =
+            anonymous : false
+            name : data.name
+            ip : req.ip
+          cbf null, {
+            message : 'success'
+          }
+        else
+          cbf null, new Error 'the password is wrong'
+    ], cbf
 
 createUser = (req, cbf) ->
   data = req.body
@@ -57,11 +86,14 @@ createUser = (req, cbf) ->
       if doc
         cbf new Error 'the user is exists'
       else
-        data.hash = getHashKey()
         new User(data).save (err, res) ->
           if err
             cbf err
           else
+            req.session.user =
+              anonymous : false
+              name : data.name
+              ip : req.ip
             cbf null, {
               message : 'success'
             }
