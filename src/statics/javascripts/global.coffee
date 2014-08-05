@@ -2,11 +2,14 @@ seajs.use ['jquery', 'underscore', 'async', 'user'], ($, _, async, user) ->
   MenuView = Backbone.View.extend {
     events : 
       'click .logIn' : 'logIn'
+      'click .logOut' : 'logOut'
 
     initialize : ->
       @listenTo user, 'status', @changeStatus
     logIn : ->
-      user.logIn (err, res) ->
+      user.logIn()
+    logOut : ->
+      user.logOut()
 
     changeStatus : (status) ->
       $el = @$el

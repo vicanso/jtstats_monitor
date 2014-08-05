@@ -226,6 +226,9 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       if !options.name
         statsNameInput.addClass 'notFilled'
         return
+      if user.get 'anonymous'
+        user.logIn()
+        return
       result = $el.find '.result'
       $.ajax({
         url : '/config'

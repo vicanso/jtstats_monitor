@@ -6,10 +6,10 @@ _ = require 'underscore'
 logger = require('../helpers/logger') __filename
 
 module.exports = (req, res, cbf) ->
-  Config = mongodb.model 'Config'
+  Config = mongodb.model 'stats_config'
   method = req.method
 
-  save = (data, cbf) ->
+  save = (data, name, cbf) ->
     async.waterfall [
       (cbf) ->
         Config.findOne {name : data.name}, cbf
@@ -18,6 +18,7 @@ module.exports = (req, res, cbf) ->
           err = new Error 'the name has exists'
           cbf err
         else
+          data.creator = name
           new Config(data).save cbf
     ], cbf
 
@@ -29,6 +30,10 @@ module.exports = (req, res, cbf) ->
 
   switch method
     when 'POST'
-      save req.body, cbf
+      user = req.session?.user
+      if user?.name
+        save req.body, user.name, cbf
+      else
+        cbf new Error 'user is not log in'
     when 'GET'
       get req.query, cbf

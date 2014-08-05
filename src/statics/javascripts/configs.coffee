@@ -5,10 +5,13 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'user', 'debug'], ($, _, Backbone
     events :
       'click .preview' : 'preview'
       'click .chartViewContainer .close' : 'closePreview'
+      'click .add' : 'add'
     initialize : ->
       debug 'initialize'
       $el = @$el
 
+    add : ->
+      @closePreview()
     closePreview : ->
       @chartView.remove() if @chartView
       @$el.find('.chartViewContainer').addClass 'hidden'

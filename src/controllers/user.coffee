@@ -5,7 +5,7 @@ url = require 'url'
 moment = require 'moment'
 _ = require 'underscore'
 crypto = require 'crypto'
-User = mongodb.model 'User'
+User = mongodb.model 'stats_user'
 logger = require('../helpers/logger') __filename
 
 
@@ -31,11 +31,18 @@ module.exports = (req, res, cbf) ->
   data = req.body
   switch method
     when 'GET' then getUserInfo req, cbf
-    when 'POST'
+    when 'POST', 'PUT'
       if data.type == 'register'
         createUser req, cbf
       else
         modifyUser req, cbf
+    when 'DELETE'
+      user = 
+        anonymous : true
+        hash : getHashKey()
+        ip : req.ip
+      req.session.user = user
+      cbf null, pickUserInfo user
 
 getUserInfo = (req, cbf) ->
   res.redirect 302, '/user?cache=false' if req.param('cache') != 'false'
@@ -51,8 +58,17 @@ getUserInfo = (req, cbf) ->
 
   }
   req.session.user = user
-  cbf null, _.pick user, ['anonymous', 'name', 'hash']
+  cbf null, pickUserInfo user
 
+pickUserInfo = (data) ->
+  _.pick data, ['anonymous', 'name', 'hash', 'id']
+
+getInfo = (req, data) ->
+  user =
+    anonymous : false
+    name : data.name
+    # id : data.name
+    ip : req.ip
 modifyUser = (req, cbf) ->
   data = req.body
   hash = req.session?.user?.hash
@@ -63,18 +79,18 @@ modifyUser = (req, cbf) ->
       (cbf) ->
         User.findOne {name : data.name}, cbf
       (doc, cbf) ->
+        if !doc
+          cbf new Error 'the user is not exists'
+          return
         shasum = crypto.createHash 'sha1'
         shasum.update "#{doc.pwd}_#{hash}"
         if data.pwd == shasum.digest 'hex'
-          req.session.user =
-            anonymous : false
-            name : data.name
-            ip : req.ip
+          req.session.user = getInfo req, data
           cbf null, {
             message : 'success'
           }
         else
-          cbf null, new Error 'the password is wrong'
+          cbf new Error 'the password is wrong'
     ], cbf
 
 createUser = (req, cbf) ->
@@ -90,10 +106,7 @@ createUser = (req, cbf) ->
           if err
             cbf err
           else
-            req.session.user =
-              anonymous : false
-              name : data.name
-              ip : req.ip
+            req.session.user = getInfo req, data
             cbf null, {
               message : 'success'
             }

@@ -10,6 +10,8 @@ define 'user', ['jquery', 'underscore', 'async', 'Backbone'], (require, exports,
 
 
   User = Backbone.Model.extend {
+    # defaults : 
+    #   id : 'vicanso'
     url : ->
       '/user?cache=false'
     initialize : ->
@@ -19,13 +21,24 @@ define 'user', ['jquery', 'underscore', 'async', 'Backbone'], (require, exports,
   user = new User()
 
   user.on 'change:anonymous', (model, val) ->
-    console.dir user.toJSON()
     status = 'logged'
     status = 'unlogged' if val
+    user.set 'id', 'vicanso' if status == 'logged'
     exports.trigger 'status', status
 
 
-  exports.logIn = (cbf) ->
+  exports.logOut = ->
+    user.destroy {
+      success : (model, res) ->
+        user.set 'name', ''
+        user.set 'id', ''
+        _.each res, (val, key) ->
+          user.set key, val
+      error : ->
+        console.dir 'error'
+    }
+
+  exports.logIn = ->
     mask = $('<div class="maskContainer" />').appendTo 'body'
     logInDialogHtml = '<div class="logInDialog">' +
       '<div class="panel panel-default">' +
@@ -78,6 +91,7 @@ define 'user', ['jquery', 'underscore', 'async', 'Backbone'], (require, exports,
               else
                 alertObj.text '登录失败！'
             success : ->
+              user.set 'id', 'vicanso'
               user.set 'anonymous', false
               dlg.remove()
               mask.remove() 

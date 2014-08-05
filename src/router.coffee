@@ -74,12 +74,17 @@ routeInfos = [
   }
   {
     route : '/config'
-    type : ['get', 'post']
+    handler : controllers.config
+  }
+  {
+    route : '/config'
+    type : 'post'
+    middleware : [session]
     handler : controllers.config
   }
   {
     route : '/user'
-    type : ['get', 'post']
+    type : 'all'
     middleware : [session]
     handler : controllers.user
   }
