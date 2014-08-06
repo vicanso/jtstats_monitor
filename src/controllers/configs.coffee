@@ -17,6 +17,7 @@ module.exports = (req, res, cbf) ->
           delete data._id
           data
         doc
+      console.dir docs
       cbf null, {
         viewData :
           page : 'configs'

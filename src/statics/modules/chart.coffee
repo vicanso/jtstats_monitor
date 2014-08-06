@@ -106,11 +106,12 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     _.map timeList, (time) ->
       moment(time * 1000).format formatStr
   getDataZoom = (total) ->
-    if total > 30
+    onePagePoionts = 50
+    if total > onePagePoionts
       {
         show : true
         realtime : true
-        start : 80
+        start : 100 - Math.floor onePagePoionts * 100 / total
         end : 100
       }
     else

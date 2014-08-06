@@ -12,7 +12,7 @@ module.exports = (req, res, cbf) ->
       mongodb.getCollectionNames cbf
   }, (err, result) ->
     collections = _.filter result.collections, (collection) ->
-      collection != 'users' && collection != 'configs'
+      !~collection.indexOf 'stats_'
     if err
       cbf err
     else

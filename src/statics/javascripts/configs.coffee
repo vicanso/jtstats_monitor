@@ -1,6 +1,11 @@
 seajs.use ['jquery', 'underscore', 'Backbone', 'user', 'debug'], ($, _, Backbone, user, debug) ->
   debug = debug 'view:configs'
   debug 'start run configsView'
+
+  TemplateView = Backbone.View.extend {
+    
+  }
+
   ConfigsView = Backbone.View.extend {
     events :
       'click .preview' : 'preview'
@@ -10,7 +15,9 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'user', 'debug'], ($, _, Backbone
       debug 'initialize'
       $el = @$el
 
-    add : ->
+    add : (e) ->
+      obj = $ e.currentTarget
+      obj.find('.glyphicon').toggleClass 'glyphicon-plus glyphicon-minus'
       @closePreview()
     closePreview : ->
       @chartView.remove() if @chartView

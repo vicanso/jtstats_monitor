@@ -10,6 +10,7 @@ module.exports =
     point : 
       interval : Number
     type : String
+    desc : String
     date :
       start : String
       end : String

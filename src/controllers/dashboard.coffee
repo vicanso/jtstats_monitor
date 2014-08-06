@@ -8,7 +8,7 @@ module.exports = (req, res, cbf) ->
     'Cache-Control' : "public, max-age=#{maxAge}"
   async.waterfall [
     (cbf) ->
-      mongodb.model('Config').find {}, cbf
+      mongodb.model('stats_config').find {}, cbf
     (docs, cbf) ->
       cbf null, {
         viewData :

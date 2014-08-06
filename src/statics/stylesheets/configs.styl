@@ -10,10 +10,6 @@
     .header
       margin 15px 0
       border-bottom 1px solid $BORDER_COLOR
-    .table
-      a
-        text-decoration none
-        color #808080
     .chartViewContainer
       position fixed
       z-index 1
@@ -39,3 +35,25 @@
       .panel-body
         height $templateConfigHeight - 40px
         overflow scroll
+        .config
+          border 1px solid #eee
+          border-left 3px solid #d9534f
+          border-radius 3px
+          padding 5px 15px
+          position relative
+          .name
+            position absolute
+            right 0
+            top 0
+            border-left 1px solid #eee
+            border-bottom 1px solid #eee
+            padding 1px 15px
+            background-color #f7f7f9
+            color #d44950
+          .viewWidth
+            margin 10px 0
+            .btn
+              &:first-child
+                opacity 1
+              &.selected
+                color #d44950
