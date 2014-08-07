@@ -5,7 +5,7 @@
   margin-left $MENU_WIDTH
   .statsConfigs
     margin 15px
-    $templateConfigHeight = 150px
+    $templateConfigHeight = 200px
     padding-bottom $templateConfigHeight
     .header
       margin 15px 0
@@ -35,18 +35,21 @@
       .panel-body
         height $templateConfigHeight - 40px
         overflow scroll
+        .col-xs-4 .btn:nth-child(2), .col-xs-6 .btn:nth-child(3), .col-xs-8 .btn:nth-child(4), .col-xs-12 .btn:nth-child(5)
+          color #d44950
         .config
-          border 1px solid #eee
+          border 1px solid #ddd
           border-left 3px solid #d9534f
           border-radius 3px
           padding 5px 15px
           position relative
+          margin-bottom 20px
           .name
             position absolute
             right 0
             top 0
-            border-left 1px solid #eee
-            border-bottom 1px solid #eee
+            border-left 1px solid #ddd
+            border-bottom 1px solid #ddd
             padding 1px 15px
             background-color #f7f7f9
             color #d44950
@@ -55,5 +58,5 @@
             .btn
               &:first-child
                 opacity 1
-              &.selected
-                color #d44950
+        .save
+          display block

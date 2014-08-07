@@ -21,7 +21,7 @@ block bodyContainer
           tbody
             each config in viewData.configs
               tr(data-id='#{config._id}')
-                td #{config.name}
+                td.name #{config.name}
                 td #{JSON.stringify(config.stats)}
                 td #{config.type}
                 td start:#{config.date.start}, end:#{config.date.end}
@@ -30,7 +30,7 @@ block bodyContainer
                   .btn-group
                     a.btn.btn-default.preview(title='预览', href='javascript:;')
                       span.glyphicon.glyphicon-play
-                    a.btn.btn-default.add(title='添加/删除', href='javascript:;')
+                    a.btn.btn-default.toggle(title='添加/删除', href='javascript:;')
                       span.glyphicon.glyphicon-plus
 
                     //- a.btn.btn-default.preview 预览
@@ -44,25 +44,18 @@ block bodyContainer
               | 预览
           .panel-body loading...
 
-      .statsTemplateConfig
+      .statsTemplateConfig.hidden
         .panel.panel-default
           .panel-heading
             h3.panel-title 统计配置
           .panel-body
+            .configs.row
             .row
-              .col-xs-4: .config
-                .name PV
-                .desc 统计当前月的PV量
-                .btn-group.viewWidth
-                  button.btn.btn-default.widthSelect.disabled 显示区域
-                  button.btn.btn-default.selected(type='button', title='占图表区域1/3')
-                    span.glyphicon.glyphicon-align-left
-                  button.btn.btn-default(type='button', title='占图表区域1/2')
-                    span.glyphicon.glyphicon-align-center
-                  button.btn.btn-default(type='button', title='占图表区域2/3')
-                    span.glyphicon.glyphicon-align-right
-                  button.btn.btn-default(type='button', title='占满图表区域')
-                    span.glyphicon.glyphicon-align-justify
-
+              .col-xs-8
+                .input-group
+                  span.input-group-addon 配置名称
+                  input.setName(type='text', class='form-control')
+              .col-xs-4
+                a.btn.btn-success.save(href='javascript:;') 保存
   - fileImporter.import(['/javascripts/configs.js', '/stylesheets/configs.css']);
 
