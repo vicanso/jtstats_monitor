@@ -26,6 +26,8 @@ define 'user', ['jquery', 'underscore', 'async', 'Backbone'], (require, exports,
     user.set 'id', 'vicanso' if status == 'logged'
     exports.trigger 'status', status
 
+  exports.isLogedIn = ->
+    !user.get 'anonymous'
 
   exports.logOut = ->
     user.destroy {
@@ -90,9 +92,9 @@ define 'user', ['jquery', 'underscore', 'async', 'Backbone'], (require, exports,
                 alertObj.text '注册失败！'
               else
                 alertObj.text '登录失败！'
-            success : ->
-              user.set 'id', 'vicanso'
-              user.set 'anonymous', false
+            success : (model, res) ->
+              _.each res, (v, k) ->
+                model.set k, v
               dlg.remove()
               mask.remove() 
           }

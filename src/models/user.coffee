@@ -7,3 +7,4 @@ module.exports =
     pwd : 
       type : String
       require : true
+    sets : []

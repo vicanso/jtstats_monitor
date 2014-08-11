@@ -46,7 +46,7 @@ module.exports = (req, res, cbf) ->
 
 getUserInfo = (req, cbf) ->
   res.redirect 302, '/user?cache=false' if req.param('cache') != 'false'
-  urlInfo = url.parse req.header 'referer'
+  # urlInfo = url.parse req.header 'referer'
 
   # PV lOG
   # console.dir urlInfo.path
@@ -55,20 +55,26 @@ getUserInfo = (req, cbf) ->
   user = req.session?.user || {
     anonymous : true
     hash : getHashKey()
-
   }
   req.session.user = user
   cbf null, pickUserInfo user
 
 pickUserInfo = (data) ->
-  _.pick data, ['anonymous', 'name', 'hash', 'id']
+  _.pick data, ['anonymous', 'name', 'hash', 'id', 'sets']
 
 getInfo = (req, data) ->
-  user =
-    anonymous : false
+  {
     name : data.name
-    # id : data.name
+    id : data.name
+    sets : data.sets
     ip : req.ip
+    anonymous : false
+    hash : getHashKey()
+  }
+  # user = pickUserInfo data
+  # user.anonymous = false
+  # user.ip = req.ip
+  # user
 modifyUser = (req, cbf) ->
   data = req.body
   hash = req.session?.user?.hash
@@ -85,10 +91,8 @@ modifyUser = (req, cbf) ->
         shasum = crypto.createHash 'sha1'
         shasum.update "#{doc.pwd}_#{hash}"
         if data.pwd == shasum.digest 'hex'
-          req.session.user = getInfo req, data
-          cbf null, {
-            message : 'success'
-          }
+          req.session.user = getInfo req, doc
+          cbf null, pickUserInfo req.session.user
         else
           cbf new Error 'the password is wrong'
     ], cbf

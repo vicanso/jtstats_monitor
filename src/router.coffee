@@ -31,9 +31,9 @@ routeInfos = [
     type : 'post'
     handler : controllers.seajs
   }
-
+  # 首页，放一些说明之类的
   {
-    route : '/jtstats'
+    route : ['/', '/jtstats']
     handler : controllers.jtstats
     middleware : [addImporter]
     template : 'jtstats'
@@ -51,13 +51,6 @@ routeInfos = [
     template : 'dashboard'
   }
 
-
-  {
-    route : '/'
-    handler : controllers.home
-    middleware : [addImporter]
-    template : 'home'
-  }
   {
     route : '/stats'
     handler : controllers.stats
@@ -81,6 +74,16 @@ routeInfos = [
     type : 'post'
     middleware : [session]
     handler : controllers.config
+  }
+  {
+    route : '/set'
+    type : 'post'
+    middleware : [session]
+    handler : controllers.set
+  }
+  {
+    route : '/set/:id'
+    handler : controllers.set
   }
   {
     route : '/user'

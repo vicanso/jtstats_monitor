@@ -1,4 +1,4 @@
-moudle.exports =
+module.exports =
   name : 'stats_set'
   schema :
     creator : 

@@ -37,10 +37,25 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'user', 'debug'], ($, _, Backbone
       if !name
         setName.focus()
         return
+      if user.get 'anonymous'
+        user.logIn()
+        return
       configs = _.map @model.toJSON(), (item) ->
         _.pick item, ['id', 'width']
-      obj.add('saving').text '保存中...'
-      console.dir configs
+      obj.text '保存中...'
+      $.ajax({
+        url : '/set'
+        type : 'post'
+        dataType : 'json'
+        contentType : 'application/json'
+        data : JSON.stringify {
+          name : name
+          configs : configs
+        }
+      }).success((res)->
+        obj.text '已成功保存'
+      ).error (res) ->
+        obj.text '保存失败'
     render : ->
       $el = @$el
       data = @model.toJSON()

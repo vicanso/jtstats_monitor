@@ -70,12 +70,13 @@ initServer = ->
     staticHandler = serveStatic staticPath
     
     hour = 3600
-    expires = moment().add(moment.duration 6, 'months').toString()
+    hourTotal = 30 * 24
+    expires = moment().add(moment.duration hourTotal, 'hour').toString()
     if !process.env.NODE_ENV
       hour = 0
       expires = ''
 
-    staticMaxAge = 30 * 24 * hour
+    staticMaxAge = hourTotal * hour
 
     if config.env == 'development'
       jtDev = require 'jtdev'
