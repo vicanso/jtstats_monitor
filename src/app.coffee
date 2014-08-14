@@ -25,7 +25,7 @@ requestStatistics = ->
   (req, res, next) ->
     requestTotal++
     startAt = process.hrtime()
-    stat =  ->
+    stat = _.once ->
       diff = process.hrtime startAt
       ms = diff[0] * 1e3 + diff[1] * 1e-6
       requestTotal--
@@ -51,7 +51,13 @@ initServer = ->
   app.use '/healthchecks', (req, res) ->
     res.send 'success'
 
+
   if config.env == 'production'
+    hostName = require('os').hostname()
+    app.use (req, res, next) ->
+      res.header 'JT-Info', "#{hostName},#{process.pid},#{process._jtPid}"
+      next()
+
     app.use requestStatistics() 
     app.use require('morgan')()
 
