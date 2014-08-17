@@ -2,6 +2,7 @@ mongodb = require '../helpers/mongodb'
 config = require '../config'
 async = require 'async'
 moment = require 'moment'
+debug = require('debug') 'jt.controller.stats'
 _ = require 'underscore'
 logger = require('../helpers/logger') __filename
 
@@ -17,16 +18,13 @@ module.exports = (req, res, cbf) ->
   funcs = _.map keys, (key) ->
     (cbf) ->
       getStatsData query, key, cbf
-  start = Date.now()
+  debug 'start:%j', query
   async.parallel funcs, (err, data) ->
     if err
       cbf err
     else
       data = _.flatten data, true
-      logger.info {
-        query : query
-        use : Date.now() - start
-      }
+      debug 'finished:%j ', query
       cbf null, data, headerOptions
 
 getStatsData = (query, key, cbf) ->
@@ -59,7 +57,7 @@ getStatsData = (query, key, cbf) ->
       '$lte' : getDate date.end
   else
     conditions.date = now.format 'YYYY-MM-DD'
-  logger.info conditions
+  debug 'conditions:%j', conditions
   if key
     value = key.value
     value = new RegExp value, 'gi' if key.type == 'reg'
@@ -122,7 +120,9 @@ mergeDocs = (docs) ->
     obj = _.omit firstItem, ['values']
     obj.start = firstItem.date
     obj.end = lastItem.date
-    obj.values = _.flatten _.pluck values, 'values'
+    tmp = _.sortBy _.flatten(_.pluck(values, 'values')), (item) ->
+      item.t
+    obj.values = tmp
     obj
 
 

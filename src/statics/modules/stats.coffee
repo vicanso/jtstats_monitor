@@ -46,6 +46,11 @@ define 'stats', ['jquery', 'underscore'], (require, exports, module) ->
       dataType : 'json'
       data : options 
     }).success((res)->
+      if _.isArray res
+        _.each res, (item) ->
+          item.viewType = options.type
+      else
+        res.viewType = options.type
       cbf null, res
     ).error cbf
 

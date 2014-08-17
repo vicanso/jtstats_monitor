@@ -118,16 +118,23 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     else
       null
 
-  showChart = (dom, data, type, option) ->
+  ###*
+   * [line 折线图]
+   * @param  {[type]} dom     [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+  ###
+  exports.line = (dom, data, options) ->
     return if !data?.length
     timeList = mergeTimeList data
     values = convertData data, timeList
-    timeList = formatTime timeList, option?.interval
+    timeList = formatTime timeList, options?.interval
 
     series = _.map data, (item, i) ->
       {
         name : item.key
-        type : type
+        type : item.viewType
         data : values[i]
       }
     currentOptions = _.extend {}, defaultOption, {
@@ -142,15 +149,165 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
         }
       ]
       series : series
-    }, option
+    }, options
     myChart = echarts.init dom, defaultTheme
     myChart.setOption currentOptions, true
-  exports.line = (obj, data, option) ->
-    showChart $(obj).get(0), data, 'line', option
-  exports.column = (obj, data, option) ->
-    showChart $(obj).get(0), data, 'bar', option
 
-  exports.gauge = (obj, data, option, getData) ->
+  ###*
+   * [barVertical 柱状图]
+   * @type {[type]}
+  ###
+  exports.barVertical = exports.line
+
+  ###*
+   * [stack 堆积图]
+   * @param  {[type]} dom     [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+  ###
+  exports.stack = (dom, data, options) ->
+    return if !data?.length
+    timeList = mergeTimeList data
+    values = convertData data, timeList
+    timeList = formatTime timeList, options?.interval
+
+    series = _.map data, (item, i) ->
+      {
+        name : item.key
+        type : item.viewType
+        stack : '总量'
+        data : values[i]
+      }
+    currentOptions = _.extend {}, defaultOption, {
+      legend :
+        data : _.pluck data, 'key'
+      dataZoom : getDataZoom timeList.length
+      xAxis : [
+        {
+          type : 'category'
+          boundaryGap : false
+          data : timeList
+        }
+      ]
+      series : series
+    }, options
+    myChart = echarts.init dom, defaultTheme
+    myChart.setOption currentOptions, true
+
+  ###*
+   * [stackBarVertical 堆积柱状图]
+   * @type {[type]}
+  ###
+  exports.stackBarVertical = exports.stack
+
+
+  ###*
+   * [barHorizontal 条形图]
+   * @param  {[type]} dom     [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+  ###
+  exports.barHorizontal = (dom, data, options, isStack = false) ->
+
+    return if !data?.length
+    timeList = mergeTimeList data
+    values = convertData data, timeList
+    timeList = formatTime timeList, options?.interval
+
+    series = _.map data, (item, i) ->
+      tmp =
+        name : item.key
+        type : item.viewType
+        data : values[i]
+      tmp.stack = '总量' if isStack
+      tmp
+    currentOptions = _.extend {}, defaultOption, {
+      legend :
+        data : _.pluck data, 'key'
+      dataZoom : getDataZoom timeList.length
+      xAxis : [
+        {
+          type : 'value'
+          boundaryGap : [0, 0.01]
+        }
+      ]
+      yAxis : [
+        {
+          type : 'category'
+          data : timeList
+        }
+      ]
+      series : series
+    }, options
+    myChart = echarts.init dom, defaultTheme
+    myChart.setOption currentOptions, true
+
+  ###*
+   * [stackBarHorizontal 堆积条纹图]
+   * @param  {[type]} dom     [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+  ###
+  exports.stackBarHorizontal = (dom, data, options) ->
+    exports.barHorizontal dom, data, options, true
+
+
+  ###*
+   * [pie 饼图]
+   * @param  {[type]} dom    [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}        [description]
+  ###
+  exports.pie = (dom, data, options) ->
+    data = _.map data, (item) ->
+      values = _.pluck item.values, 'v'
+      switch item.type
+        when 'counter' then value = sum values
+        when 'average' then value = average values
+        when 'gauge' then value = _.last values
+      {
+        name : item.key
+        value : value
+      }
+    options = _.extend {}, defaultPieOption, {
+      legend :
+        data : _.pluck data, 'name'
+        orient : 'vertical'
+        x : 'left'
+        y : '30px'
+      series : [
+        {
+          name : options?.title?.text
+          type : 'pie'
+          data : data
+        }
+      ]
+      animation : false
+    }, options
+    myChart = echarts.init dom, defaultTheme
+    myChart.setOption options, true
+
+  ###*
+   * [nestedPie 嵌套饼图]
+   * @param  {[type]} dom     [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+  ###
+  exports.nestedPie = (dom, data, options) ->
+
+  ###*
+   * [gauge 仪表盘]
+   * @param  {[type]} dom     [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+  ###
+  exports.gauge = (dom, data, options) ->
     currentOptions = _.extend {
       toolbox : 
         show : true
@@ -161,8 +318,7 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
             show : true
           saveAsImage :
             show : true
-    }, option
-    dom = $(obj).get 0
+    }, options
     currentOptions.series = _.map data, (item) ->
       {
         name : item.key
@@ -176,15 +332,99 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
         ]
       }
     myChart = echarts.init dom, defaultTheme
+    myChart.setOption currentOptions
+
+  ###*
+   * [funnel 漏斗图]
+   * @param  {[type]} dom     [description]
+   * @param  {[type]} data    [description]
+   * @param  {[type]} options [description]
+   * @return {[type]}         [description]
+  ###
+  exports.funnel = (dom, data, options) ->
+    data = _.map data, (item) ->
+      values = _.pluck item.values, 'v'
+      switch item.type
+        when 'counter' then value = sum values
+        when 'average' then value = average values
+        when 'gauge' then value = _.last values
+      {
+        name : item.key
+        value : value
+      }
+    maxValue = 0
+    _.each data, (item) ->
+      maxValue = item.value if item.value > maxValue
+    _.each data, (item) ->
+      item.value = Math.floor item.value * 100 / maxValue
+
+    console.dir data
+    currentOptions = _.extend {
+      title : options.title
+      tooltip : 
+        trigger : 'item'
+        formatter: "{b} : {c}%"
+      toolbox :
+        show : true
+        feature :
+          mark :
+            show : true
+          dataView :
+            show : true
+            readOnly : false
+          restore : 
+            show : true
+          saveAsImage :
+            show : true
+      legend : 
+        data : _.pluck data, 'name'
+      calculable : true
+      series : [
+        {
+          type : 'funnel'
+          data : data
+        }
+      ]
+    }         
+
+    myChart = echarts.init dom, defaultTheme
     myChart.setOption currentOptions, true
+
+  # exports.gauge = (obj, data, option, getData) ->
+    # currentOptions = _.extend {
+    #   toolbox : 
+    #     show : true
+    #     feature : 
+    #       mark : 
+    #         show : true
+    #       restore :
+    #         show : true
+    #       saveAsImage :
+    #         show : true
+    # }, option
+    # dom = $(obj).get 0
+    # currentOptions.series = _.map data, (item) ->
+    #   {
+    #     name : item.key
+    #     type : 'gauge'
+    #     detail : 
+    #       formatter : '{value}'
+    #     data : [
+    #       {
+    #         value : item.values[0].v
+    #       }
+    #     ]
+    #   }
+    # myChart = echarts.init dom, defaultTheme
+    # myChart.setOption currentOptions, true
     
-    setInterval ->
-      getData (err, data) ->
-        if data
-          _.each data, (item, i) ->
-            currentOptions.series[i].data[0].value = item.values[0].v
-          myChart.setOption currentOptions, true
-    , 10 * 1000 if getData
+  #   setInterval ->
+  #     getData (err, data) ->
+  #       if data
+  #         _.each data, (item, i) ->
+  #           currentOptions.series[i].data[0].value = item.values[0].v
+  #         myChart.setOption currentOptions, true
+  #   , 10 * 1000 if getData
 
   exports.columnFresh = (obj, data, option, getData) ->
     currentOptions = _.extend {
@@ -237,30 +477,6 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
            
 
 
-  exports.pie = (obj, res, option) ->
-    data = _.map res, (data) ->
-      values = _.pluck data.values, 'v'
-      switch data.type
-        when 'counter' then value = sum values
-        when 'average' then value = average values
-        when 'gauge' then value = _.last values
-      {
-        name : data.key
-        value : value
-      }
-    option = _.extend {}, defaultPieOption, {
-      legend :
-        data : _.pluck data, 'name'
-      series : [
-        {
-          name : option?.title?.text
-          type : 'pie'
-          data : data
-        }
-      ]
-    }, option
-    myChart = echarts.init $(obj).get(0), defaultTheme
-    myChart.setOption option, true
 
 
 

@@ -2,11 +2,15 @@
 @import './common'
 
 .uiSelector
-  line-height 30px
+  $selectorHeight = 30px
+  line-height $selectorHeight
   border 1px solid $BORDER_COLOR
   padding-left 10px
   border-radius 3px
   position relative
+  .content
+    height $selectorHeight
+    overflow hidden
   &.editMode
     &:hover
       .selectList
@@ -43,7 +47,6 @@
   .placeholder
     margin-left 10px
     color #aaa
-    font-size 12px
   .edit
     float right
   .userInput

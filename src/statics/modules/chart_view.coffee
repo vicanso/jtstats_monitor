@@ -39,7 +39,7 @@ define 'ChartView', ['underscore', 'stats', 'chart', 'async'], (require, exports
           interval : interval
         
         func = getData if window.parseInt(interval) == -1
-        chart[type] @$el, data, options, func
+        chart[type] @$el.get(0), data, options, func
 
   }
 

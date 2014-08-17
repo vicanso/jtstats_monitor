@@ -21,21 +21,53 @@ module.exports = (req, res, cbf) ->
           page : 'add'
           chartTypes : [
             {
+              name : '折线图'
               type : 'line'
-              name : '线状图'
             }
             {
-              type : 'column'
+              name : '堆积折线图'
+              type : 'stack'
+            }
+            {
               name : '柱状图'
+              type : 'barVertical'
             }
             {
+              name : '条形图'
+              type : 'barHorizontal'
+            }
+            {
+              name : '堆积柱状图'
+              type : 'stackBarVertical'
+            }
+            {
+              name : '堆积条形图'
+              type : 'stackBarHorizontal'
+            }
+            {
+              name : '标准饼图'
               type : 'pie'
-              name : '饼图'
             }
             {
-              type : 'gauge'
-              name : '仪表盘'
+              name : '嵌套饼图'
+              type : 'nestedPie'
             }
+            {
+              name : '仪表盘'
+              type : 'gauge'
+            }
+            # {
+            #   name : '多仪表盘'
+            #   type : 'multiGauge'
+            # }
+            {
+              name : '漏斗图'
+              type : 'funnel'
+            }
+            # {
+            #   name : '多漏斗图'
+            #   type : 'multiFunnel'
+            # }
           ]
           globalVariable :
             collections : collections
