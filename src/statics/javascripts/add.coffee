@@ -155,7 +155,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       index = $el.find('.btn-group .btn-success').index()
       typeList = ['line', 'bar', 'pie']
       {
-        type : typeList[index] || 'line'
+        chart : typeList[index] || 'line'
         category : category
         keys : convertKeys keys
       }
@@ -168,6 +168,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       'click .result .preview' : 'preview'
       'click .statsConfig .add' : 'add'
       'click .statsConfig .remove' : 'remove'
+      'click .result .save' : 'save'
     initialize : ->
       debug 'initialize StatsConfigsView'
       $el = @$el
@@ -177,9 +178,8 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
         el : $el.find '.dateConfig'
       }
 
-      # @statsParamsView = new StatsParamsView {
-      #   el : $el.find '.statsConfig'
-      # }
+      $el.find('.result input').focus ->
+        $(@).removeClass 'notFilled'
 
       @statsParamsViewList = []
       @createStatsConfig $el.find '.statsConfig'
@@ -256,6 +256,29 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       debug 'config %j', config
       config
 
+    save : ->
+      options = @getOptions()
+      return if !options
+      $el = @$el
+      statsNameInput = $el.find '.statsName input'
+      if !options.name
+        statsNameInput.addClass 'notFilled'
+        return
+      if user.get 'anonymous'
+        user.logIn()
+        return
+      result = $el.find '.saveResult'
+      console.dir options
+      $.ajax({
+        url : '/config'
+        type : 'post'
+        dataType : 'json'
+        contentType : 'application/json'
+        data : JSON.stringify options
+      }).success((res)->
+        result.removeClass('hidden alert-danger').addClass('alert-success').html '已成功保证该统计配置！'
+      ).error (res) ->
+        result.removeClass('hidden alert-success').addClass('alert-danger').html '保存统计配置失败！'
 
     preview : ->
 
@@ -360,8 +383,8 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
   #       format : 'yyyy-mm-dd'
   #       todayBtn : 'linked'
   #     }
-  #     $el.find('input').focus ->
-  #       $(@).removeClass 'notFilled'
+      # $el.find('input').focus ->
+      #   $(@).removeClass 'notFilled'
 
   #   removeConfig : (e) ->
   #     statsConfig = $(e.currentTarget).siblings '.statsConfig'
@@ -530,27 +553,27 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
   #       chartView.show()
   #       @chartView = chartView
   #   save : ->
-  #     options = @getOptions()
-  #     return if !options
-  #     $el = @$el
-  #     statsNameInput = $el.find '.statsName input'
-  #     if !options.name
-  #       statsNameInput.addClass 'notFilled'
-  #       return
-  #     if user.get 'anonymous'
-  #       user.logIn()
-  #       return
-  #     result = $el.find '.result'
-  #     $.ajax({
-  #       url : '/config'
-  #       type : 'post'
-  #       dataType : 'json'
-  #       contentType : 'application/json'
-  #       data : JSON.stringify options
-  #     }).success((res)->
-  #       result.removeClass('hidden alert-danger').addClass('alert-success').html '已成功保证该统计配置！'
-  #     ).error (res) ->
-  #       result.removeClass('hidden alert-success').addClass('alert-danger').html '保存统计配置失败！'
+      # options = @getOptions()
+      # return if !options
+      # $el = @$el
+      # statsNameInput = $el.find '.statsName input'
+      # if !options.name
+      #   statsNameInput.addClass 'notFilled'
+      #   return
+      # if user.get 'anonymous'
+      #   user.logIn()
+      #   return
+      # result = $el.find '.result'
+      # $.ajax({
+      #   url : '/config'
+      #   type : 'post'
+      #   dataType : 'json'
+      #   contentType : 'application/json'
+      #   data : JSON.stringify options
+      # }).success((res)->
+      #   result.removeClass('hidden alert-danger').addClass('alert-success').html '已成功保证该统计配置！'
+      # ).error (res) ->
+      #   result.removeClass('hidden alert-success').addClass('alert-danger').html '保存统计配置失败！'
   #   reset : ->
   #     $el = @$el
   #     @intervalSelector.reset()

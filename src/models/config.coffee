@@ -17,6 +17,7 @@ module.exports =
     stats : [
       {
         category : String
+        chart : String
         keys : []
       }
     ]

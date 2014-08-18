@@ -48,9 +48,9 @@ define 'stats', ['jquery', 'underscore'], (require, exports, module) ->
     }).success((res)->
       if _.isArray res
         _.each res, (item) ->
-          item.viewType = options.type
+          item.chart = options.chart
       else
-        res.viewType = options.type
+        res.chart = options.chart
       cbf null, res
     ).error cbf
 

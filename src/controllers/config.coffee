@@ -19,6 +19,7 @@ module.exports = (req, res, cbf) ->
           cbf err
         else
           data.creator = name
+          console.dir JSON.stringify data
           new Config(data).save cbf
     ], cbf
 

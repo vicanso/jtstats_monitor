@@ -134,7 +134,7 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     series = _.map data, (item, i) ->
       {
         name : item.key
-        type : item.viewType
+        type : item.chart
         data : values[i]
       }
     currentOptions = _.extend {}, defaultOption, {
@@ -175,7 +175,7 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     series = _.map data, (item, i) ->
       {
         name : item.key
-        type : item.viewType
+        type : item.chart
         stack : '总量'
         data : values[i]
       }
@@ -219,7 +219,7 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     series = _.map data, (item, i) ->
       tmp =
         name : item.key
-        type : item.viewType
+        type : item.chart
         data : values[i]
       tmp.stack = '总量' if isStack
       tmp

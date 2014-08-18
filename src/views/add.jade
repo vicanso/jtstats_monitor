@@ -9,7 +9,7 @@ block bodyContainer
 
     .pageContainer.StatsConfigs
       h1.header Add
-      .row
+      .row.clearfix
         .configContainer.col-sm-6.col-md-3: div
           h4.title 图表类型
           ul.typeList.clearfix
@@ -55,9 +55,10 @@ block bodyContainer
             span.input-group-addon 统计描述
             input.form-control(type='text', placeholder='请输入该统计的描述')
 
-          a.btn.btn-primary.reset(href='javascript:;') 重置
+          a.btn.btn-primary.reset(href='javascript:window.location.reload();') 重置
           a.btn.btn-danger.preview(href='javascript:;') 预览
           a.btn.btn-success.save(href='javascript:;') 保存
+      .saveResult.alert.hidden
 
 
 
