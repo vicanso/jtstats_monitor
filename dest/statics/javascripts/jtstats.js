@@ -1,0 +1,1 @@
+(function(){seajs.use(["jquery","underscore","widget"],function(a,b,c){return new c.Selector({el:a(".selector"),items:JT_GLOBAL.collections})})}).call(this);

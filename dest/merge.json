@@ -1,0 +1,23 @@
+{
+  "except" : [
+    "/components/jquery/dist/jquery.js",
+    "/components/bootstrap/dist/css/bootstrap.css",
+    "/components/bootstrap/dist/js/bootstrap.js",
+    "/components/echarts/echarts.js"
+  ],
+  "files" : [
+    [
+      "/components/underscore/underscore.js",
+      "/components/backbone/backbone.js"
+    ],
+    [
+      "/components/moment/moment.js",
+      "/components/async/lib/async.js",
+      "/components/debug/dist/debug.js"
+    ],
+    [
+      "/components/seajs/sea.js",
+      "/javascripts/sea_config.js"
+    ]
+  ]
+}

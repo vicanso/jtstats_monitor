@@ -125,6 +125,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       @_xhr = $.getJSON "/collection/#{category}/keys", (data) =>
         @_xhr = null
         keySelector.options data
+      @
     getParams : ->
       $el = @$el
       categorySelector = @categorySelector
@@ -227,7 +228,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
       @_xhr = $.getJSON "/collection/#{category}/keys", (data) =>
         @_xhr = null
         keySelector.options data
-
+      @
     getOptions : ->
       $el = @$el
       type = $el.find('.typeList .selected').data 'type'
@@ -329,6 +330,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user'], ($, _
         chartView.setOptions options
         chartView.show()
         @chartView = chartView
+        return
   }
 
   new StatsConfigsView {

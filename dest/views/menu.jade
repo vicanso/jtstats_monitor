@@ -1,0 +1,18 @@
+- fileImporter.import('/stylesheets/menu.css');
+- var page = viewData.page || 'dashboard';
+.menuContainer
+  .logo JTStats
+  ul.functions
+    li: a(href='/dashboard', class='#{page == "dashboard"? "active" : ""}') 
+      span.glyphicon.glyphicon-stats 
+      | Dashboard
+    li: a(href='/add', class='#{page == "add"? "active" : ""}')
+      span.glyphicon.glyphicon-plus 
+      | Add
+    li: a(href='/configs', class='#{page == "configs"? "active" : ""}')
+      span.glyphicon.glyphicon-list
+      | Configs
+  .logIn.hidden: a(href='javascript:;')
+    span.glyphicon.glyphicon-log-in
+  .hidden.logOut: a(href='javascript:;')
+    span.glyphicon.glyphicon-off

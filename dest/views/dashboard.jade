@@ -1,0 +1,13 @@
+extends ./layout
+
+block bodyContainer
+  include ./menu
+  #contentContainer
+    include ./header
+    .pageContainer
+      h1.header Dashboard
+
+      .charListContainer.row
+        
+
+  - fileImporter.import(['/stylesheets/dashboard.css', '/javascripts/dashboard.js']);

@@ -72,7 +72,8 @@ define 'widget', ['jquery', 'underscore', 'Backbone', 'debug'], (require, export
       arr = _.map @model.get('items'), (item, i) =>
         color = @colors[i % @colors.length]
         liTemplate {name : item, color : color}
-      html = arr.join ''
+      arr.join ''
+
     ###*
      * [toggle selector中的toggle]
      * @param  {[type]} e [description]

@@ -98,11 +98,11 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
   formatTime = (timeList, interval) ->
     formatStr = 'YYYY-MM-DD HH:mm:ss'
     if interval
-      if !(interval % daySeconds)
+      if interval % daySeconds == 0
         formatStr = 'YYYY-MM-DD'
-      else if !(interval % 3600)
+      else if interval % 3600 == 0
         formatStr = 'YYYY-MM-DD HH'
-      else if !(interval % 60)
+      else if interval % 60 == 0
         formatStr = 'YYYY-MM-DD HH:mm'
     _.map timeList, (time) ->
       moment(time * 1000).format formatStr
@@ -355,8 +355,10 @@ define 'chart', ['jquery', 'underscore', 'echarts', 'moment', 'stats'], (require
     maxValue = 0
     _.each data, (item) ->
       maxValue = item.value if item.value > maxValue
+      return
     _.each data, (item) ->
       item.value = Math.floor item.value * 100 / maxValue
+      return
 
     console.dir data
     currentOptions = _.extend {

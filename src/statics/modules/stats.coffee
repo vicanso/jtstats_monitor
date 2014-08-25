@@ -49,14 +49,15 @@ define 'stats', ['jquery', 'underscore'], (require, exports, module) ->
       if _.isArray res
         _.each res, (item) ->
           item.chart = options.chart
+          return
       else
         res.chart = options.chart
       cbf null, res
     ).error cbf
 
-  exports.setDefaultInterval = (interval) ->
-    defaultInterval = interval
-  exports.getDefaultInterval = ->
+  exports.interval = (interval) ->
+    if interval && interval > 0
+      defaultInterval = interval
     defaultInterval
 
 

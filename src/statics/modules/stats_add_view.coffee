@@ -142,6 +142,7 @@ define 'StatsAddView', ['jquery', 'underscore', 'Backbone'], (require, exports, 
         isClickDropdownMenu = false
         obj.find('.dropdown-menu').on 'click', ->
           isClickDropdownMenu = true
+          return
         obj.find('.input-group-btn').on 'hide.bs.dropdown', (e) ->
           if isClickDropdownMenu
             e.preventDefault()

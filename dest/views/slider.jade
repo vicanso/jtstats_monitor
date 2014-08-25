@@ -1,0 +1,12 @@
+- fileImporter.import('/stylesheets/slider.css');
+.col-sm-3.col-md-2.statsListContainer
+  ul.nav.slider
+    li(class='#{viewData.page == "home"? "active" : ""}')
+      a.add(href='/') 
+        span.glyphicon.glyphicon-plus
+        | Add
+  ul.nav.slider
+    li(class='#{viewData.page == "configs"? "active" : ""}')
+      a(href='/configs')
+        span.glyphicon.glyphicon-th-list
+        | Configs

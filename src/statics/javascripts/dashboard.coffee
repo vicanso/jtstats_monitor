@@ -9,7 +9,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'widget', 'debug', 'user', 'async
           if status
             cbf null, user.get 'sets'
           else
-            cbf new 'user is not login'
+            cbf new Error 'user is not login'
     (sets, cbf) ->
       $.ajax({
         url : "/set/#{sets[0]}"

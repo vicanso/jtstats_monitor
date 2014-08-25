@@ -70,6 +70,7 @@ getStatsData = (query, key, cbf) ->
       if interval < 0
         _.each docs, (doc) ->
           doc.values = [_.last doc.values]
+          return
         cbf null, docs
       else if interval > 0
         cbf null, arrangePoints docs, interval, fill
@@ -112,6 +113,7 @@ mergeDocs = (docs) ->
       _.each value, (v, t) ->
         tmp.t = GLOBAL.parseInt(t) + startOfSeconds
         tmp.v = v
+        return
       tmp
     result[key].push doc
   _.map result, (values, key) ->

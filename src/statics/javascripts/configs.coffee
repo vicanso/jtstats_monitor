@@ -94,6 +94,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'user', 'debug'], ($, _, Backbone
         model : @templateConfigList
         el : $el.find '.statsTemplateConfig'
       }
+      @
       # @listenTo @templateConfigList, 'add remove', @renderTempalteConfig
 
     toggle : (e) ->
@@ -135,6 +136,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'user', 'debug'], ($, _, Backbone
         chartView.setOptions JT_GLOBAL.configs[index]
         chartView.show()
         @chartView = chartView
+        return
 
   }
 

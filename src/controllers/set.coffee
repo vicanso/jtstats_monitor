@@ -44,6 +44,8 @@ get = (req, cbf) ->
     (cbf) ->
       Set.findById id, cbf
     (doc, cbf) ->
+      if !doc
+        return cbf new Error "can not find doc by #{id}"
       funcs = _.map _.pluck(doc.configs, 'id'), (id) ->
         (cbf) ->
           Config.findById id, cbf
@@ -54,6 +56,7 @@ get = (req, cbf) ->
           data = doc.toObject()
           _.each docs, (tmp, i) ->
             data.configs[i] = _.extend tmp.toObject(), data.configs[i]
+            return
           cbf null, data, headerOptions
       # cbf null, doc, headerOptions
   ], cbf

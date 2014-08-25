@@ -1,0 +1,1 @@
+.maskContainer{position:fixed;left:0;top:0;right:0;bottom:0;z-index:8;background-color:rgba(0,0,0,.6)}.logInDialog{position:fixed;left:50%;top:50%;width:500px;z-index:9;margin-left:-250px;margin-top:-150px;background-color:#fff}.logInDialog .close{float:right;font-size:16px;font-weight:400}.logInDialog .form-control{margin-bottom:20px}.logInDialog .btn{display:block}

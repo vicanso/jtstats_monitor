@@ -19,6 +19,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
         chartView.setOptions options
         chartView.show()
         @chartView = chartView
+        return
     showStatsAddView : ->
       @chartView.remove() if @chartView
       @statsAddView.remove() if @statsAddView
@@ -34,6 +35,7 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'stats', 'chart'], ($, _, Backbon
         statsView.on 'error', (msg) =>
           @showError msg
         @statsAddView = statsView
+        return
   }
 
   mainView = new MainView {

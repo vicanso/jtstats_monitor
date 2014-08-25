@@ -49,6 +49,7 @@ module.exports.initModels = (modelPath) ->
       _.each model.indexes, (indexOptions) ->
         schema.index.apply schema, indexOptions
     modelDict[name] = client.model name, schema
+    return
 
 
 ###*
