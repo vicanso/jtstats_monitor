@@ -2,6 +2,7 @@ path = require 'path'
 config = require './config'
 moment = require 'moment'
 logger = require('./helpers/logger') __filename
+_ = require 'underscore'
 
 initAppSetting = (app) ->
   app.set 'view engine', 'jade'

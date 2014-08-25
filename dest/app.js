@@ -1,5 +1,5 @@
 (function() {
-  var JTCluster, config, initAppSetting, initMongod, initServer, jtCluster, logger, moment, options, path, requestStatistics;
+  var JTCluster, config, initAppSetting, initMongod, initServer, jtCluster, logger, moment, options, path, requestStatistics, _;
 
   path = require('path');
 
@@ -8,6 +8,8 @@
   moment = require('moment');
 
   logger = require('./helpers/logger')(__filename);
+
+  _ = require('underscore');
 
   initAppSetting = function(app) {
     app.set('view engine', 'jade');
