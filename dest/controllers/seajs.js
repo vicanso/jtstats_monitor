@@ -35,8 +35,9 @@
    */
 
   refreshComponents = function(template, files) {
-    var allComponents, components, result, staticUrlPrefix, url;
-    allComponents = JSON.parse(fs.readFileSync(componentsFile));
+    var allComponents, components, json, result, staticUrlPrefix, url;
+    json = fs.readFileSync(componentsFile).toString() || '{}';
+    allComponents = JSON.parse(json);
     result = {
       js: [],
       css: []

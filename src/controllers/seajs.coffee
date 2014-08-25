@@ -22,7 +22,8 @@ module.exports = (req, res, cbf) ->
  * @return {[type]}          [description]
 ###
 refreshComponents = (template, files) ->
-  allComponents = JSON.parse fs.readFileSync componentsFile
+  json = fs.readFileSync(componentsFile).toString() || '{}'
+  allComponents = JSON.parse json 
   result = 
     js : []
     css : []

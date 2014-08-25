@@ -39,4 +39,8 @@ seajs.use ['jquery', 'underscore', 'async', 'user'], ($, _, async, user) ->
   new HeaderView {
     el : $ '.headerContainer'
   }
+
+  _.delay ->
+    seajs.emit 'loadComplete' if CONFIG.env == 'development'
+  , 1000
     

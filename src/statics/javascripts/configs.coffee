@@ -144,9 +144,4 @@ seajs.use ['jquery', 'underscore', 'Backbone', 'user', 'debug'], ($, _, Backbone
   new ConfigsView {
     el : $ '.statsConfigs'
   }
-  # user.create {
-  #   name : 'vicanso'
-  #   pwd : 'oajfoeajfeo'
-  # }, (err, res) ->
-  #   console.dir err
-  #   console.dir res
+  

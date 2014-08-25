@@ -40,9 +40,14 @@
     new MenuView({
       el: $('.menuContainer')
     });
-    return new HeaderView({
+    new HeaderView({
       el: $('.headerContainer')
     });
+    return _.delay(function() {
+      if (CONFIG.env === 'development') {
+        return seajs.emit('loadComplete');
+      }
+    }, 1000);
   });
 
 }).call(this);

@@ -1,53 +1,29 @@
 {
-  "home": {
+  "dashboard": {
     "js": [
       "/components/jquery/dist/jquery.js",
-      "/components/bootstrap/dist/js/bootstrap.js",
       "/components/underscore/underscore.js",
       "/components/backbone/backbone.js",
       "/components/echarts/echarts.js",
       "/components/moment/moment.js",
       "/components/async/lib/async.js",
-      "/javascripts/global.js",
+      "/components/debug/dist/debug.js",
       "/components/seajs/sea.js",
       "/javascripts/sea_config.js",
-      "/modules/stats.js",
-      "/modules/chart.js",
-      "/modules/stats_add_view.js",
-      "/javascripts/home.js"
+      "/modules/user.js",
+      "/modules/widget.js",
+      "/javascripts/global.js",
+      "/javascripts/dashboard.js"
     ],
     "css": [
       "/components/bootstrap/dist/css/bootstrap.css",
+      "/stylesheets/widget.css",
+      "/stylesheets/global.css",
+      "/stylesheets/menu.css",
       "/stylesheets/header.css",
-      "/stylesheets/slider.css",
-      "/stylesheets/home.css"
+      "/stylesheets/dashboard.css"
     ],
-    "modifiedAt": "2014-07-20 16:12:28"
-  },
-  "configs": {
-    "js": [
-      "/components/jquery/dist/jquery.js",
-      "/components/bootstrap/dist/js/bootstrap.js",
-      "/components/underscore/underscore.js",
-      "/components/backbone/backbone.js",
-      "/components/echarts/echarts.js",
-      "/components/moment/moment.js",
-      "/components/async/lib/async.js",
-      "/javascripts/global.js",
-      "/components/seajs/sea.js",
-      "/javascripts/sea_config.js",
-      "/modules/stats.js",
-      "/modules/chart.js",
-      "/modules/stats_add_view.js",
-      "/javascripts/home.js"
-    ],
-    "css": [
-      "/components/bootstrap/dist/css/bootstrap.css",
-      "/stylesheets/header.css",
-      "/stylesheets/slider.css",
-      "/stylesheets/home.css"
-    ],
-    "modifiedAt": "2014-07-16 22:24:46"
+    "modifiedAt": "2014-08-25 22:27:39"
   },
   "add": {
     "js": [
@@ -75,6 +51,57 @@
       "/components/bootstrap-datepicker/css/datepicker3.css",
       "/stylesheets/add.css"
     ],
-    "modifiedAt": "2014-08-04 22:27:31"
+    "modifiedAt": "2014-08-25 22:27:56"
+  },
+  "configs": {
+    "js": [
+      "/components/jquery/dist/jquery.js",
+      "/components/underscore/underscore.js",
+      "/components/backbone/backbone.js",
+      "/components/echarts/echarts.js",
+      "/components/moment/moment.js",
+      "/components/async/lib/async.js",
+      "/components/debug/dist/debug.js",
+      "/components/seajs/sea.js",
+      "/javascripts/sea_config.js",
+      "/modules/user.js",
+      "/javascripts/global.js",
+      "/javascripts/configs.js"
+    ],
+    "css": [
+      "/components/bootstrap/dist/css/bootstrap.css",
+      "/stylesheets/widget.css",
+      "/stylesheets/global.css",
+      "/stylesheets/menu.css",
+      "/stylesheets/header.css",
+      "/stylesheets/configs.css"
+    ],
+    "modifiedAt": "2014-08-25 22:27:57"
+  },
+  "jtstats": {
+    "js": [
+      "/components/jquery/dist/jquery.js",
+      "/components/underscore/underscore.js",
+      "/components/backbone/backbone.js",
+      "/components/echarts/echarts.js",
+      "/components/moment/moment.js",
+      "/components/async/lib/async.js",
+      "/components/debug/dist/debug.js",
+      "/components/seajs/sea.js",
+      "/javascripts/sea_config.js",
+      "/modules/user.js",
+      "/modules/widget.js",
+      "/javascripts/global.js",
+      "/javascripts/jtstats.js"
+    ],
+    "css": [
+      "/components/bootstrap/dist/css/bootstrap.css",
+      "/stylesheets/widget.css",
+      "/stylesheets/global.css",
+      "/stylesheets/menu.css",
+      "/stylesheets/header.css",
+      "/stylesheets/jtstats.css"
+    ],
+    "modifiedAt": "2014-08-25 22:28:03"
   }
 }

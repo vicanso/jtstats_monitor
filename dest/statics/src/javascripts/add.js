@@ -372,12 +372,9 @@
         })(this));
       }
     });
-    new StatsConfigsView({
+    return new StatsConfigsView({
       el: $('.StatsConfigs')
     });
-    if (CONFIG.env === 'development') {
-      return seajs.emit('loadComplete');
-    }
   });
 
 }).call(this);

@@ -18,6 +18,12 @@
     [
       "/components/seajs/sea.js",
       "/javascripts/sea_config.js"
+    ],
+    [
+      "/stylesheets/widget.css",
+      "/stylesheets/global.css",
+      "/stylesheets/menu.css",
+      "/stylesheets/header.css"
     ]
   ]
 }
