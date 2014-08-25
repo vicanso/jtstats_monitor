@@ -8,6 +8,9 @@
     noop = function() {};
     _.extend(exports, Backbone.Events);
     User = Backbone.Model.extend({
+      defaults: {
+        anonymous: true
+      },
       url: function() {
         return '/user?cache=false';
       },

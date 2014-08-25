@@ -10,8 +10,8 @@ define 'user', ['jquery', 'underscore', 'async', 'Backbone'], (require, exports,
 
 
   User = Backbone.Model.extend {
-    # defaults : 
-    #   id : 'vicanso'
+    defaults : 
+      anonymous : true
     url : ->
       '/user?cache=false'
     initialize : ->
