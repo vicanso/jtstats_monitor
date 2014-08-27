@@ -29,6 +29,7 @@ module.exports = (req, res, cbf) ->
   method = req.method
   user = req.session
   data = req.body
+  res.header 'Cache-Control', 'no-cache, no-store'
   switch method
     when 'GET' then getUserInfo req, cbf
     when 'POST', 'PUT'

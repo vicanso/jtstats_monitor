@@ -2,6 +2,7 @@ config = require '../config'
 JTError = require '../helpers/jterror'
 module.exports = (err, req, res, next) ->
   err = new JTError err if !(err instanceof JTError)
+  res.header 'Cache-Control', 'no-cache, no-store'
   if 'json' == req.accepts ['html', 'json']
     data = err.toJSON()
     delete data.stack if config.env != 'development'

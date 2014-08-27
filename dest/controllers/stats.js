@@ -16,15 +16,18 @@
   logger = require('../helpers/logger')(__filename);
 
   module.exports = function(req, res, cbf) {
-    var funcs, headerOptions, keys, maxAge, query;
-    maxAge = 60;
+    var funcs, headerOptions, interval, keys, maxAge, query, _ref;
+    query = req.query;
+    interval = (_ref = query.point) != null ? _ref.interval : void 0;
+    if (interval && interval > 0) {
+      maxAge = Math.min(interval, 1800);
+    }
     if (config.env === 'development') {
       maxAge = 0;
     }
     headerOptions = {
       'Cache-Control': "public, max-age=" + maxAge
     };
-    query = req.query;
     keys = query.keys;
     if (!_.isArray(keys)) {
       keys = [keys];

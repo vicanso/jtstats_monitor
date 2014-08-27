@@ -40,6 +40,7 @@
     method = req.method;
     user = req.session;
     data = req.body;
+    res.header('Cache-Control', 'no-cache, no-store');
     switch (method) {
       case 'GET':
         return getUserInfo(req, cbf);

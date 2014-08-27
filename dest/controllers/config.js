@@ -30,9 +30,12 @@
             return cbf(err);
           } else {
             data.creator = name;
-            console.dir(JSON.stringify(data));
             return new Config(data).save(cbf);
           }
+        }, function(doc, cbf) {
+          return cbf(null, doc, {
+            'Cache-Control': 'no-cache, no-store'
+          });
         }
       ], cbf);
     };
@@ -41,7 +44,21 @@
         cbf(new Error('query can not be null'));
         return;
       }
-      return Config.findOne(query, cbf);
+      return async.waterfall([
+        function(cbf) {
+          return Config.findOne(query, cbf);
+        }, function(data, cbf) {
+          var headerOptions, maxAge;
+          maxAge = 600;
+          if (config.env === 'development') {
+            maxAge = 0;
+          }
+          headerOptions = {
+            'Cache-Control': "public, max-age=" + maxAge
+          };
+          return cbf(null, data, headerOptions);
+        }
+      ], cbf);
     };
     switch (method) {
       case 'POST':

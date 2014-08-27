@@ -7,12 +7,15 @@ _ = require 'underscore'
 logger = require('../helpers/logger') __filename
 
 module.exports = (req, res, cbf) ->
-  maxAge = 60
+
+  query = req.query
+  interval = query.point?.interval
+  if interval && interval > 0
+    maxAge = Math.min interval, 1800
   maxAge = 0 if config.env == 'development'
   headerOptions = 
     'Cache-Control' : "public, max-age=#{maxAge}"
 
-  query = req.query
   keys = query.keys
   keys = [keys] if !_.isArray keys
   funcs = _.map keys, (key) ->

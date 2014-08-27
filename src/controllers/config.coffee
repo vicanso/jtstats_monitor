@@ -19,15 +19,28 @@ module.exports = (req, res, cbf) ->
           cbf err
         else
           data.creator = name
-          console.dir JSON.stringify data
           new Config(data).save cbf
+      (doc, cbf) ->
+        cbf null, doc, {
+          'Cache-Control' : 'no-cache, no-store'
+        }
     ], cbf
 
   get = (query, cbf) ->
     if !query
       cbf new Error 'query can not be null'
       return
-    Config.findOne query, cbf
+    async.waterfall [
+      (cbf) ->
+        Config.findOne query, cbf
+      (data, cbf) ->
+        maxAge = 600
+        maxAge = 0 if config.env == 'development'
+        headerOptions = 
+          'Cache-Control' : "public, max-age=#{maxAge}"
+        cbf null, data, headerOptions
+    ], cbf
+    
 
   switch method
     when 'POST'

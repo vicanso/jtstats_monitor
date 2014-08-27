@@ -10,6 +10,7 @@
     if (!(err instanceof JTError)) {
       err = new JTError(err);
     }
+    res.header('Cache-Control', 'no-cache, no-store');
     if ('json' === req.accepts(['html', 'json'])) {
       data = err.toJSON();
       if (config.env !== 'development') {
