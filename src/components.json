@@ -12,6 +12,9 @@
       "/javascripts/sea_config.js",
       "/modules/user.js",
       "/modules/widget.js",
+      "/modules/chart_view.js",
+      "/modules/stats.js",
+      "/modules/chart.js",
       "/javascripts/global.js",
       "/javascripts/dashboard.js"
     ],
@@ -23,7 +26,7 @@
       "/stylesheets/header.css",
       "/stylesheets/dashboard.css"
     ],
-    "modifiedAt": "2014-08-25 22:27:39"
+    "modifiedAt": "2014-08-28 21:06:56"
   },
   "add": {
     "js": [

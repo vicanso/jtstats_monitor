@@ -30,7 +30,9 @@
             return cbf(err);
           } else {
             data.creator = name;
-            return new Config(data).save(cbf);
+            return new Config(data).save(function(err, doc) {
+              return cbf(err, doc);
+            });
           }
         }, function(doc, cbf) {
           return cbf(null, doc, {
@@ -49,7 +51,7 @@
           return Config.findOne(query, cbf);
         }, function(data, cbf) {
           var headerOptions, maxAge;
-          maxAge = 600;
+          maxAge = 60;
           if (config.env === 'development') {
             maxAge = 0;
           }

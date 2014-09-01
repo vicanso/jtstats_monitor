@@ -9,7 +9,7 @@
     _.extend(exports, Backbone.Events);
     User = Backbone.Model.extend({
       defaults: {
-        anonymous: true
+        anonymous: ''
       },
       url: function() {
         return '/user?cache=false';

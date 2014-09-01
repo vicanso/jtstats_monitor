@@ -19,8 +19,10 @@ module.exports = (req, res, cbf) ->
           cbf err
         else
           data.creator = name
-          new Config(data).save cbf
+          new Config(data).save (err, doc) ->
+            cbf err, doc
       (doc, cbf) ->
+
         cbf null, doc, {
           'Cache-Control' : 'no-cache, no-store'
         }
@@ -34,7 +36,7 @@ module.exports = (req, res, cbf) ->
       (cbf) ->
         Config.findOne query, cbf
       (data, cbf) ->
-        maxAge = 600
+        maxAge = 60
         maxAge = 0 if config.env == 'development'
         headerOptions = 
           'Cache-Control' : "public, max-age=#{maxAge}"
