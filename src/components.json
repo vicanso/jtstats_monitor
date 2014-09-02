@@ -8,13 +8,10 @@
       "/components/moment/moment.js",
       "/components/async/lib/async.js",
       "/components/debug/dist/debug.js",
-      "/components/seajs/sea.js",
+      "/components/seajs/dist/sea.js",
       "/javascripts/sea_config.js",
       "/modules/user.js",
       "/modules/widget.js",
-      "/modules/chart_view.js",
-      "/modules/stats.js",
-      "/modules/chart.js",
       "/javascripts/global.js",
       "/javascripts/dashboard.js"
     ],
@@ -26,7 +23,7 @@
       "/stylesheets/header.css",
       "/stylesheets/dashboard.css"
     ],
-    "modifiedAt": "2014-08-28 21:06:56"
+    "modifiedAt": "2014-09-02 20:27:50"
   },
   "add": {
     "js": [
@@ -37,7 +34,7 @@
       "/components/moment/moment.js",
       "/components/async/lib/async.js",
       "/components/debug/dist/debug.js",
-      "/components/seajs/sea.js",
+      "/components/seajs/dist/sea.js",
       "/javascripts/sea_config.js",
       "/modules/user.js",
       "/modules/widget.js",
@@ -54,7 +51,7 @@
       "/components/bootstrap-datepicker/css/datepicker3.css",
       "/stylesheets/add.css"
     ],
-    "modifiedAt": "2014-08-25 22:27:56"
+    "modifiedAt": "2014-09-02 20:26:18"
   },
   "configs": {
     "js": [
@@ -90,7 +87,7 @@
       "/components/moment/moment.js",
       "/components/async/lib/async.js",
       "/components/debug/dist/debug.js",
-      "/components/seajs/sea.js",
+      "/components/seajs/dist/sea.js",
       "/javascripts/sea_config.js",
       "/modules/user.js",
       "/modules/widget.js",
@@ -105,6 +102,6 @@
       "/stylesheets/header.css",
       "/stylesheets/jtstats.css"
     ],
-    "modifiedAt": "2014-08-25 22:28:03"
+    "modifiedAt": "2014-09-02 20:22:07"
   }
 }

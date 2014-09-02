@@ -1,1 +1,1 @@
-DEBUG=jt.* node-dev app.coffee --mongodb mongodb://localhost:10020/stats
+DEBUG=jt.* node-dev app.coffee -p 10001--mongodb mongodb://localhost:10020/stats
